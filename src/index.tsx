@@ -60,10 +60,11 @@ table {
 }
 body {
   font-weight: 300;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Noto Sans KR', sans-serif;
   color: ${(props) => props.theme.white.darker};
 	background-color: black;
   line-height: 1.2;
+	overflow-x: hidden;
 }
 a {
   text-decoration:none;

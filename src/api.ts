@@ -21,8 +21,20 @@ export interface IGetMovies {
   total_results: number;
 }
 
-export function getMovies() {
+export function getNowPlayingMv() {
   return fetch(
-    `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1&region=kr`
+    `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=ko-KR&page=1&region=kr`
   ).then((res) => res.json());
+}
+
+export function getPopularMv() {
+  return fetch(
+    `${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=1&region=kr`
+  ).then((res) => res.json());
+}
+
+export function getTopRatedMv() {
+  return fetch(`
+		${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&anguage=ko-KR&page=1&region=kr
+	`).then((res) => res.json());
 }
