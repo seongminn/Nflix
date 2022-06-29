@@ -77,9 +77,12 @@ function Home() {
             </Describe>
           </Banner>
 
-          <MovieSlider movieData={popularMvData!.results} name={"pop"} />
-          <MovieSlider movieData={nowPlayingMvData!.results} name={"np"} />
-          <MovieSlider movieData={topRatedMvData!.results} name={"top"} />
+          <MovieSlider movieData={popularMvData!.results} name={"Popular"} />
+          <MovieSlider
+            movieData={nowPlayingMvData!.results}
+            name={"Now Playing"}
+          />
+          <MovieSlider movieData={topRatedMvData!.results} name={"Top Rated"} />
         </>
       )}
     </Wrapper>

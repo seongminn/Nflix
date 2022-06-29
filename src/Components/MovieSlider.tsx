@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
 import { makeImgPath } from "../Routes/utils";
 import { IGetMovies, IMovie } from "./../api";
+import { faCaretLeft, faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Slider = styled.div`
   position: relative;
@@ -64,7 +66,29 @@ const Info = styled(motion.div)`
   }
 `;
 
-const Btn = styled.button``;
+const LeftBtn = styled.button`
+  position: absolute;
+  top: 84px;
+  left: 20px;
+  font-size: 32px;
+  background-color: transparent;
+  color: ${(props) => props.theme.white.lighter};
+  border-color: transparent;
+
+  cursor: pointer;
+`;
+
+const RightBtn = styled.button`
+  position: absolute;
+  top: 84px;
+  right: 20px;
+  font-size: 32px;
+  background-color: transparent;
+  color: ${(props) => props.theme.white.lighter};
+  border-color: transparent;
+
+  cursor: pointer;
+`;
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -110,15 +134,15 @@ const BigOverview = styled.p`
 `;
 
 const rowVars = {
-  hidden: {
-    x: window.outerWidth - 10,
-  },
+  hidden: (back: boolean) => ({
+    x: back ? -window.outerWidth - 10 : window.outerWidth + 10,
+  }),
   visible: {
     x: 0,
   },
-  exit: {
-    x: -window.outerWidth + 10,
-  },
+  exit: (back: boolean) => ({
+    x: back ? window.outerWidth + 10 : -window.outerWidth - 10,
+  }),
 };
 
 const boxVars = {
@@ -152,28 +176,25 @@ function MovieSlider({ movieData, name }: IMovieData) {
 
   const [leaving, setLeaving] = useState(false);
   const [index, setIndex] = useState(0);
+  const [back, setBack] = useState(false);
 
   const navigate = useNavigate();
 
-  // const { isLoading: isPopularMvLoading, data: popularMvdata } =
-  //   useQuery<IGetMovies>(["movies", "popularMv"], getPopularMv);
-  // const { isLoading: isNowPlayingMvLoading, data: nowPlayingMvData } =
-  //   useQuery<IGetMovies>(["movies", "nowPlaying"], getNowPlayingMv);
-  // const { isLoading: isTopRatedMvLoading, data: topRatedMvData } =
-  //   useQuery<IGetMovies>(["movies", "topRated"], getTopRatedMv);
-
-  // const LOADING =
-  //   isPopularMvLoading || isNowPlayingMvLoading || isTopRatedMvLoading;
-
   const toggleLeaving = () => setLeaving((prev) => !prev);
 
-  const increaseIndex = () => {
+  const increaseIndex = (dir: string) => {
     if (movieData) {
       if (leaving) return;
       toggleLeaving();
       const totalMovies = movieData.length - 1;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
-      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+      if (dir === "prev") {
+        setBack(true);
+        setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+      } else if (dir === "next") {
+        setBack(false);
+        setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+      }
     }
   };
 
@@ -195,10 +216,14 @@ function MovieSlider({ movieData, name }: IMovieData) {
   return (
     <>
       <Slider>
-        <Category onClick={increaseIndex}>Popular</Category>
-        <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
-          <Btn></Btn>
+        <Category>{name}</Category>
+        <AnimatePresence
+          custom={back}
+          initial={false}
+          onExitComplete={toggleLeaving}
+        >
           <Row
+            custom={back}
             variants={rowVars}
             initial="hidden"
             animate="visible"
@@ -206,6 +231,9 @@ function MovieSlider({ movieData, name }: IMovieData) {
             transition={{ type: "tween", duration: 1 }}
             key={index}
           >
+            <LeftBtn onClick={() => increaseIndex("prev")}>
+              <FontAwesomeIcon icon={faCaretLeft} />
+            </LeftBtn>
             {movieData
               .slice(1)
               .slice(index * offset, index * offset + offset)
@@ -229,6 +257,9 @@ function MovieSlider({ movieData, name }: IMovieData) {
                   </Info>
                 </Box>
               ))}
+            <RightBtn onClick={() => increaseIndex("next")}>
+              <FontAwesomeIcon icon={faCaretRight} />
+            </RightBtn>
           </Row>
         </AnimatePresence>
       </Slider>
