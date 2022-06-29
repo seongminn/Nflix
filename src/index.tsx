@@ -60,7 +60,7 @@ table {
 }
 body {
   font-weight: 300;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'BR', sans-serif;
   color: ${(props) => props.theme.white.darker};
 	background-color: black;
   line-height: 1.2;

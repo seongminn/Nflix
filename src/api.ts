@@ -1,7 +1,7 @@
 const API_KEY = "1665b67f6a6b938726f4f69ea376ef50";
 const BASE_PATH = "https://api.themoviedb.org/3";
 
-interface IMovie {
+export interface IMovie {
   backdrop_path: string;
   id: number;
   overview: string;
@@ -11,7 +11,7 @@ interface IMovie {
 }
 
 export interface IGetMovies {
-  dates: {
+  dates?: {
     maximum: string;
     minimum: string;
   };
@@ -21,20 +21,23 @@ export interface IGetMovies {
   total_results: number;
 }
 
-export function getNowPlayingMv() {
-  return fetch(
+export async function getNowPlayingMv() {
+  const res = await fetch(
     `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=ko-KR&page=1&region=kr`
-  ).then((res) => res.json());
+  );
+  return await res.json();
 }
 
-export function getPopularMv() {
-  return fetch(
+export async function getPopularMv() {
+  const res = await fetch(
     `${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=1&region=kr`
-  ).then((res) => res.json());
+  );
+  return await res.json();
 }
 
-export function getTopRatedMv() {
-  return fetch(`
+export async function getTopRatedMv() {
+  const res = await fetch(`
 		${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&anguage=ko-KR&page=1&region=kr
-	`).then((res) => res.json());
+	`);
+  return await res.json();
 }
