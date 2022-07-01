@@ -10,17 +10,22 @@ import { makeImgPath } from "./utils";
 import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
 import { useMatch, useNavigate } from "react-router-dom";
 import MovieSlider from "../Components/MovieSlider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const Wrapper = styled.div`
   background-color: black;
 `;
 
-const Loader = styled.div`
-  height: 20vh;
+const LoadWrapper = styled.div`
+  height: 100vh;
+  background-color: black;
   display: flex;
+  align-items: center;
   justify-content: center;
-  text-align: center;
 `;
+
+const Loader = styled.div``;
 
 const Banner = styled.div<{ bgphoto: string }>`
   height: 100vh;
@@ -49,8 +54,6 @@ const Overview = styled.p`
   font-size: 1vw;
 `;
 
-const offset = 6;
-
 function Home() {
   const { isLoading: isPopularMvLoading, data: popularMvData } =
     useQuery<IGetMovies>(["movies", "popularMv"], getPopularMv);
@@ -65,7 +68,12 @@ function Home() {
   return (
     <Wrapper>
       {LOADING ? (
-        <Loader>Loading..</Loader>
+        <LoadWrapper>
+          <Loader>
+            Loading &nbsp;
+            <FontAwesomeIcon icon={faSpinner}></FontAwesomeIcon>
+          </Loader>
+        </LoadWrapper>
       ) : (
         <>
           <Banner
@@ -77,11 +85,11 @@ function Home() {
             </Describe>
           </Banner>
 
-          <MovieSlider movieData={popularMvData!.results} name={"Popular"} />
           <MovieSlider
             movieData={nowPlayingMvData!.results}
             name={"Now Playing"}
           />
+          <MovieSlider movieData={popularMvData!.results} name={"Popular"} />
           <MovieSlider movieData={topRatedMvData!.results} name={"Top Rated"} />
         </>
       )}

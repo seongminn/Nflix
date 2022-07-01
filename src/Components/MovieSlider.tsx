@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
 import { makeImgPath } from "../Routes/utils";
 import { IGetMovies, IMovie } from "./../api";
@@ -109,6 +109,8 @@ const BigMovie = styled(motion.div)`
   background-color: ${(props) => props.theme.black.lighter};
   border-radius: 15px;
   overflow: hidden;
+
+  z-index: 999;
 `;
 
 const BigCover = styled.div`
@@ -203,15 +205,16 @@ function MovieSlider({ movieData, name }: IMovieData) {
   };
 
   const bigMovieMatch = useMatch("movies/:movieId");
-  const clickedMovie =
-    bigMovieMatch?.params.movieId &&
-    movieData.find((movie) => movie.id + "" === bigMovieMatch.params.movieId);
 
   const { scrollY } = useViewportScroll();
 
   const onOverlayClick = () => {
     navigate(`/`);
   };
+
+  const clickedMovie =
+    bigMovieMatch?.params.movieId &&
+    movieData.find((movie) => movie.id + "" === bigMovieMatch.params.movieId);
 
   return (
     <>
