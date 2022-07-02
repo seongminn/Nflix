@@ -7,8 +7,6 @@ import {
   IGetMovies,
 } from "./../api";
 import { makeImgPath } from "./utils";
-import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
-import { useMatch, useNavigate } from "react-router-dom";
 import MovieSlider from "../Components/MovieSlider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -86,11 +84,23 @@ function Home() {
           </Banner>
 
           <MovieSlider
-            movieData={nowPlayingMvData!.results}
-            name={"Now Playing"}
+            movieData={{
+              movieArr: [...nowPlayingMvData!.results],
+              movieName: "Now_Playing",
+            }}
           />
-          <MovieSlider movieData={popularMvData!.results} name={"Popular"} />
-          <MovieSlider movieData={topRatedMvData!.results} name={"Top Rated"} />
+          <MovieSlider
+            movieData={{
+              movieArr: [...popularMvData!.results],
+              movieName: "Popular",
+            }}
+          />
+          <MovieSlider
+            movieData={{
+              movieArr: topRatedMvData!.results,
+              movieName: "Top_Rated",
+            }}
+          />
         </>
       )}
     </Wrapper>

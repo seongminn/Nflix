@@ -1,9 +1,9 @@
 import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { useMatch, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useMatch, useNavigate, useParams } from "react-router-dom";
 import { makeImgPath } from "../Routes/utils";
-import { IGetMovies, IMovie } from "./../api";
+import { IMovie } from "./../api";
 import { faCaretLeft, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -97,6 +97,8 @@ const Overlay = styled(motion.div)`
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   opacity: 0;
+
+  z-index: 99;
 `;
 
 const BigMovie = styled(motion.div)`
@@ -168,11 +170,13 @@ const infoVars = {
 const offset = 6;
 
 interface IMovieData {
-  movieData: IMovie[];
-  name: string;
+  movieData: {
+    movieArr: IMovie[];
+    movieName: string;
+  };
 }
 
-function MovieSlider({ movieData, name }: IMovieData) {
+function MovieSlider({ movieData }: IMovieData) {
   const NETFLIX_LOGO_URL =
     "https://assets.brand.microsites.netflix.io/assets/2800a67c-4252-11ec-a9ce-066b49664af6_cm_800w.jpg?v=4";
 
@@ -188,7 +192,7 @@ function MovieSlider({ movieData, name }: IMovieData) {
     if (movieData) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = movieData.length - 1;
+      const totalMovies = movieData.movieArr.length - 1;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
       if (dir === "prev") {
         setBack(true);
@@ -201,12 +205,14 @@ function MovieSlider({ movieData, name }: IMovieData) {
   };
 
   const onBoxClicked = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
+    navigate(`/movies/${movieData.movieName}/${movieId}`);
   };
 
-  const bigMovieMatch = useMatch("movies/:movieId");
+  const bigMovieMatch = useMatch(`movies/:category/:movieId`);
 
   const { scrollY } = useViewportScroll();
+
+  const { category } = useParams();
 
   const onOverlayClick = () => {
     navigate(`/`);
@@ -214,12 +220,15 @@ function MovieSlider({ movieData, name }: IMovieData) {
 
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
-    movieData.find((movie) => movie.id + "" === bigMovieMatch.params.movieId);
+    movieData.movieName === category &&
+    movieData.movieArr.find(
+      (movie) => movie.id + "" === bigMovieMatch.params.movieId
+    );
 
   return (
     <>
       <Slider>
-        <Category>{name}</Category>
+        <Category>{movieData.movieName}</Category>
         <AnimatePresence
           custom={back}
           initial={false}
@@ -237,18 +246,18 @@ function MovieSlider({ movieData, name }: IMovieData) {
             <LeftBtn onClick={() => increaseIndex("prev")}>
               <FontAwesomeIcon icon={faCaretLeft} />
             </LeftBtn>
-            {movieData
+            {movieData.movieArr
               .slice(1)
               .slice(index * offset, index * offset + offset)
               .map((movie) => (
                 <Box
-                  layoutId={movie.id + name}
+                  layoutId={movie.id + movieData.movieName}
                   onClick={() => onBoxClicked(movie.id)}
                   variants={boxVars}
                   initial="normal"
                   whileHover="hover"
                   transition={{ type: "tween" }}
-                  key={movie.id + name}
+                  key={movie.id + movieData.movieName}
                   bgphoto={
                     movie.backdrop_path
                       ? makeImgPath(movie.backdrop_path, "w500")
@@ -267,7 +276,7 @@ function MovieSlider({ movieData, name }: IMovieData) {
         </AnimatePresence>
       </Slider>
       <AnimatePresence>
-        {bigMovieMatch ? (
+        {bigMovieMatch && clickedMovie ? (
           <>
             <Overlay
               animate={{ opacity: 1 }}
@@ -276,8 +285,9 @@ function MovieSlider({ movieData, name }: IMovieData) {
             />
             <BigMovie
               style={{ top: scrollY.get() + 100 }}
-              layoutId={bigMovieMatch.params.movieId + name}
+              layoutId={bigMovieMatch.params.movieId + movieData.movieName}
             >
+              {console.log(bigMovieMatch.params.movieId + movieData.movieName)}
               {clickedMovie && (
                 <>
                   <BigCover
