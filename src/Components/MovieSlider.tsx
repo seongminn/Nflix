@@ -6,6 +6,8 @@ import { makeImgPath } from "../Routes/utils";
 import { IMovie } from "./../api";
 import { faCaretLeft, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSetRecoilState } from "recoil";
+import { overlayState } from "./../atoms";
 
 const Slider = styled.div`
   position: relative;
@@ -177,12 +179,10 @@ interface IMovieData {
 }
 
 function MovieSlider({ movieData }: IMovieData) {
-  const NETFLIX_LOGO_URL =
-    "https://assets.brand.microsites.netflix.io/assets/2800a67c-4252-11ec-a9ce-066b49664af6_cm_800w.jpg?v=4";
-
   const [leaving, setLeaving] = useState(false);
   const [index, setIndex] = useState(0);
   const [back, setBack] = useState(false);
+  const setOverlay = useSetRecoilState(overlayState);
 
   const navigate = useNavigate();
 
@@ -205,6 +205,7 @@ function MovieSlider({ movieData }: IMovieData) {
   };
 
   const onBoxClicked = (movieId: number) => {
+    setOverlay(true);
     navigate(`/movies/${movieData.movieName}/${movieId}`);
   };
 
@@ -215,6 +216,7 @@ function MovieSlider({ movieData }: IMovieData) {
   const { category } = useParams();
 
   const onOverlayClick = () => {
+    setOverlay(false);
     navigate(`/`);
   };
 
@@ -224,6 +226,8 @@ function MovieSlider({ movieData }: IMovieData) {
     movieData.movieArr.find(
       (movie) => movie.id + "" === bigMovieMatch.params.movieId
     );
+
+  console.log(clickedMovie);
 
   return (
     <>
@@ -261,7 +265,7 @@ function MovieSlider({ movieData }: IMovieData) {
                   bgphoto={
                     movie.backdrop_path
                       ? makeImgPath(movie.backdrop_path, "w500")
-                      : NETFLIX_LOGO_URL
+                      : makeImgPath(movie.poster_path)
                   }
                 >
                   <Info variants={infoVars}>
@@ -287,14 +291,15 @@ function MovieSlider({ movieData }: IMovieData) {
               style={{ top: scrollY.get() + 100 }}
               layoutId={bigMovieMatch.params.movieId + movieData.movieName}
             >
-              {console.log(bigMovieMatch.params.movieId + movieData.movieName)}
               {clickedMovie && (
                 <>
                   <BigCover
                     style={{
-                      backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImgPath(
+                      backgroundImage: `linear-gradient(to top, black, transparent), url(${
                         clickedMovie.backdrop_path
-                      )})`,
+                          ? makeImgPath(clickedMovie.backdrop_path)
+                          : makeImgPath(clickedMovie.poster_path)
+                      })`,
                     }}
                   />
                   <BigTitle>{clickedMovie.title}</BigTitle>
