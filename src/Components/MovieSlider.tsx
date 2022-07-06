@@ -20,6 +20,7 @@ const Category = styled.p`
   padding: 0 60px;
   margin-bottom: 20px;
   font-size: 1.5vw;
+  font-weight: 500;
 
   &::before {
     content: "";
@@ -129,13 +130,23 @@ const BigTitle = styled.h3`
   padding: 20px;
   font-size: 46px;
   position: relative;
-  top: -80px;
+  top: -90px;
+  font-weight: 600;
 `;
+
+const BigDates = styled.div`
+  top: 0;
+`;
+
+const BigRates = styled.div``;
+
+const BigGenre = styled.div``;
+
+const BigPopularity = styled.div``;
 
 const BigOverview = styled.p`
   padding: 20px;
   color: ${(props) => props.theme.white.lighter};
-  position: relative;
   top: -80px;
 `;
 
@@ -227,8 +238,6 @@ function MovieSlider({ movieData }: IMovieData) {
       (movie) => movie.id + "" === bigMovieMatch.params.movieId
     );
 
-  console.log(clickedMovie);
-
   return (
     <>
       <Slider>
@@ -265,7 +274,7 @@ function MovieSlider({ movieData }: IMovieData) {
                   bgphoto={
                     movie.backdrop_path
                       ? makeImgPath(movie.backdrop_path, "w500")
-                      : makeImgPath(movie.poster_path)
+                      : makeImgPath(movie.poster_path, "w500")
                   }
                 >
                   <Info variants={infoVars}>
@@ -303,6 +312,8 @@ function MovieSlider({ movieData }: IMovieData) {
                     }}
                   />
                   <BigTitle>{clickedMovie.title}</BigTitle>
+                  <BigDates>{clickedMovie.release_date}</BigDates>
+                  <BigGenre>{clickedMovie.genre_ids}</BigGenre>
                   <BigOverview>{clickedMovie.overview}</BigOverview>
                 </>
               )}

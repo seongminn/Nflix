@@ -4,16 +4,6 @@
 }
 
 @font-face {
-  font-family: BMEuljiro;
-  src: url("./BMEuljirooraeorae.ttf");
-}
-
-@font-face {
-  font-family: Yeonsung;
-  src: url("./BMYEONSUNG_ttf.ttf");
-}
-
-@font-face {
-  font-family: BM;
-  src: url("./BMEULJIROTTF.ttf");
+  font-family: nflix;
+  src: url("./BebasNeue-Regular.ttf");
 }

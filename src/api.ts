@@ -8,6 +8,8 @@ export interface IMovie {
   poster_path: string;
   title: string;
   video: boolean;
+  release_date: string;
+  genre_ids: [number];
 }
 
 export interface IGetMovies {
@@ -37,7 +39,14 @@ export async function getPopularMv() {
 
 export async function getTopRatedMv() {
   const res = await fetch(`
-		${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&anguage=ko-KR&page=1&region=kr
+		${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=ko-KR&page=1&region=kr
 	`);
+  return await res.json();
+}
+
+export async function getGenre() {
+  const res = await fetch(
+    `${BASE_PATH}/genre/movie/list?api_key=${API_KEY}&language=ko-KR`
+  );
   return await res.json();
 }

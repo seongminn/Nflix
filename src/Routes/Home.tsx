@@ -45,11 +45,13 @@ const Describe = styled.div`
 
 const Title = styled.h2`
   font-size: 3vw;
+  font-weight: bold;
   margin-bottom: 20px;
 `;
 
 const Overview = styled.p`
-  font-size: 1vw;
+  font-size: 20px;
+  font-weight: 400;
 `;
 
 function Home() {
