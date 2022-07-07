@@ -65,6 +65,21 @@ body {
 	background-color: black;
   line-height: 1.2;
 	overflow-x: hidden;
+
+	&::-webkit-scrollbar {
+		width: 6px;
+	}
+	&::-webkit-scrollbar-track {
+		background-color: transparent;
+	}
+	&::-webkit-scrollbar-thumb {
+		border-radius: 3px;
+		background-color: gray;
+	}
+	&::-webkit-scrollbar-button {
+		width: 0;
+		height: 0;
+	}
 }
 a {
   text-decoration:none;

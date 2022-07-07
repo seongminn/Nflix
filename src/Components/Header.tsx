@@ -59,14 +59,13 @@ const Search = styled.form`
   }
 `;
 
-const Circle = styled(motion.span)`
+const PositionBar = styled(motion.span)`
   position: absolute;
-  width: 5px;
-  height: 5px;
+  width: 100%;
+  height: 2px;
   background-color: ${(props) => props.theme.red};
-  border-radius: 50%;
   bottom: -5px;
-  left: 0;
+  left: 2px;
   right: 0;
   margin: 0 auto;
 `;
@@ -148,13 +147,13 @@ function Header() {
           <Item>
             <Link to="/">
               Home
-              {homeMatch && <Circle layoutId="circle" />}
+              {homeMatch && <PositionBar layoutId="circle" />}
             </Link>
           </Item>
           <Item>
             <Link to="tv">
               Tv Shows
-              {tvMatch && <Circle layoutId="circle" />}
+              {tvMatch && <PositionBar layoutId="circle" />}
             </Link>
           </Item>
         </Items>

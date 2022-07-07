@@ -52,3 +52,10 @@ export async function getGenre() {
   );
   return await res.json();
 }
+
+export async function getOnAirTv() {
+  const res = await fetch(
+    `${BASE_PATH}/tv/on_the_air?api_key=${API_KEY}&language=ko-KR&page=1`
+  );
+  return await res.json();
+}

@@ -19,14 +19,15 @@ const Slider = styled.div`
   position: relative;
   top: -150px;
   margin-bottom: 100px;
-  height: 240px;
+  height: 200px;
 `;
 
 const Category = styled.p`
   padding: 0 60px;
   margin-bottom: 20px;
-  font-size: 1.5vw;
-  font-weight: 500;
+  font-size: 1.4vw;
+  font-weight: 600;
+  font-family: "Source Sans Pro";
 
   &::before {
     content: "";
@@ -52,7 +53,9 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
   background-position: center center;
   height: 200px;
   font-size: 66px;
+  border-radius: 5px;
   cursor: pointer;
+
   &:first-child {
     transform-origin: center left;
   }
@@ -71,7 +74,7 @@ const Info = styled(motion.div)`
 
   h4 {
     text-align: center;
-    font-size: 18px;
+    font-size: 14px;
   }
 `;
 
@@ -104,7 +107,7 @@ const Overlay = styled(motion.div)`
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.75);
   opacity: 0;
 
   z-index: 99;
@@ -118,8 +121,9 @@ const BigMovie = styled(motion.div)`
   width: 40%;
   height: 80vh;
   background-color: ${(props) => props.theme.black.lighter};
-  border-radius: 15px;
+  border-radius: 5px;
   overflow: hidden;
+  /* box-shadow: 2px 2px 18px 8px ${(props) => props.theme.black.veryDark}; */
 
   z-index: 999;
 `;
@@ -144,6 +148,7 @@ const BigTitle = styled.h3`
 
 const BigDetails = styled.div`
   padding: 20px;
+  padding-bottom: 10px;
   display: flex;
 `;
 
@@ -152,8 +157,9 @@ const BigDates = styled.div`
   font-size: 16px;
 `;
 
-const BigRates = styled.div<{ star: number }>`
+const BigRates = styled.div`
   margin-right: 10px;
+  font-size: 14px;
 
   path {
     fill: #ffeaa7;
@@ -166,7 +172,16 @@ const BigGenreBox = styled.div`
   gap: 10px;
 `;
 
-const BigGenre = styled.span``;
+const BigGenre = styled.span`
+  font-size: 13px;
+  position: relative;
+
+  & + &::before {
+    content: "|";
+    color: gray;
+    padding-right: 10px;
+  }
+`;
 
 const BigOverview = styled.p`
   padding: 20px;
@@ -299,11 +314,11 @@ function MovieSlider({ movieData }: IMovieData) {
                 <Box
                   layoutId={movie.id + movieData.movieName}
                   onClick={() => onBoxClicked(movie.id)}
+                  key={movie.id + movieData.movieName}
                   variants={boxVars}
                   initial="normal"
                   whileHover="hover"
                   transition={{ type: "tween" }}
-                  key={movie.id + movieData.movieName}
                   bgphoto={
                     movie.backdrop_path
                       ? makeImgPath(movie.backdrop_path, "w500")
@@ -337,7 +352,7 @@ function MovieSlider({ movieData }: IMovieData) {
                 <>
                   <BigCover
                     style={{
-                      backgroundImage: `linear-gradient(to top, black, transparent), url(${
+                      backgroundImage: `linear-gradient(to top, rgb(47, 47, 47), transparent 10%), url(${
                         clickedMovie.backdrop_path
                           ? makeImgPath(clickedMovie.backdrop_path)
                           : makeImgPath(clickedMovie.poster_path)
@@ -348,7 +363,7 @@ function MovieSlider({ movieData }: IMovieData) {
                   </BigCover>
 
                   <BigDetails>
-                    <BigRates star={clickedMovie.vote_average}>
+                    <BigRates>
                       {[
                         ...Array(
                           Math.trunc(Math.round(clickedMovie.vote_average) / 2)
@@ -359,7 +374,7 @@ function MovieSlider({ movieData }: IMovieData) {
                       {Math.trunc(Math.round(clickedMovie.vote_average) % 2) ? (
                         <FontAwesomeIcon icon={faStarHalfStroke} />
                       ) : null}
-                      ({clickedMovie.vote_count})
+                      &nbsp; ({`VOTE: ${clickedMovie.vote_count}`})
                     </BigRates>
                     <BigDates>{clickedMovie.release_date.slice(0, 4)}</BigDates>
                   </BigDetails>
