@@ -9,8 +9,7 @@ export interface IMovie {
   title: string;
   video: boolean;
   release_date: string;
-  genre_ids: [number];
-  popularity: number;
+  genre_ids: number[];
   vote_average: number;
   vote_count: number;
 }

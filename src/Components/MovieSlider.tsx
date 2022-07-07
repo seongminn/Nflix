@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useMatch, useNavigate, useParams } from "react-router-dom";
 import { makeImgPath } from "../Routes/utils";
-import { IMovie } from "./../api";
+import { getGenre, IMovie } from "./../api";
 import {
   faCaretLeft,
   faCaretRight,
@@ -13,6 +13,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSetRecoilState } from "recoil";
 import { overlayState } from "./../atoms";
+import { useQuery } from "react-query";
 
 const Slider = styled.div`
   position: relative;
@@ -132,23 +133,40 @@ const BigCover = styled.div`
 `;
 
 const BigTitle = styled.h3`
+  position: absolute;
+  bottom: 0;
+
   color: ${(props) => props.theme.white.lighter};
   padding: 20px;
   font-size: 46px;
   font-weight: 600;
-  position: absolute;
-  bottom: 0;
+`;
+
+const BigDetails = styled.div`
+  padding: 20px;
+  display: flex;
 `;
 
 const BigDates = styled.div`
-  top: 0;
+  font-weight: 500;
+  font-size: 16px;
 `;
 
-const BigRates = styled.div<{ star: number }>``;
+const BigRates = styled.div<{ star: number }>`
+  margin-right: 10px;
 
-const BigGenre = styled.div``;
+  path {
+    fill: #ffeaa7;
+  }
+`;
 
-const BigPopularity = styled.div``;
+const BigGenreBox = styled.div`
+  padding-left: 20px;
+  display: flex;
+  gap: 10px;
+`;
+
+const BigGenre = styled.span``;
 
 const BigOverview = styled.p`
   padding: 20px;
@@ -195,12 +213,21 @@ interface IMovieData {
   };
 }
 
+interface IGenreData {
+  genres: IGenre[];
+}
+
+interface IGenre {
+  id: number;
+  name: string;
+}
+
 function MovieSlider({ movieData }: IMovieData) {
   const [leaving, setLeaving] = useState(false);
   const [index, setIndex] = useState(0);
   const [back, setBack] = useState(false);
+  const { data: genreData } = useQuery<IGenreData>("genres", getGenre);
   const setOverlay = useSetRecoilState(overlayState);
-
   const navigate = useNavigate();
 
   const toggleLeaving = () => setLeaving((prev) => !prev);
@@ -319,22 +346,31 @@ function MovieSlider({ movieData }: IMovieData) {
                   >
                     <BigTitle>{clickedMovie.title}</BigTitle>
                   </BigCover>
-                  <BigDates>{clickedMovie.release_date}</BigDates>
-                  <BigPopularity>{clickedMovie.popularity}</BigPopularity>
-                  <BigRates star={clickedMovie.vote_average}>
-                    {[
-                      ...Array(
-                        Math.trunc(Math.round(clickedMovie.vote_average) / 2)
-                      ),
-                    ].map((v, index) => (
-                      <FontAwesomeIcon key={index} icon={faStar} />
-                    ))}
-                    {Math.trunc(Math.round(clickedMovie.vote_average) % 2) ? (
-                      <FontAwesomeIcon icon={faStarHalfStroke} />
-                    ) : null}
-                    ({clickedMovie.vote_count})
-                  </BigRates>
-                  <BigGenre>{clickedMovie.genre_ids}</BigGenre>
+
+                  <BigDetails>
+                    <BigRates star={clickedMovie.vote_average}>
+                      {[
+                        ...Array(
+                          Math.trunc(Math.round(clickedMovie.vote_average) / 2)
+                        ),
+                      ].map((v, index) => (
+                        <FontAwesomeIcon key={index} icon={faStar} />
+                      ))}
+                      {Math.trunc(Math.round(clickedMovie.vote_average) % 2) ? (
+                        <FontAwesomeIcon icon={faStarHalfStroke} />
+                      ) : null}
+                      ({clickedMovie.vote_count})
+                    </BigRates>
+                    <BigDates>{clickedMovie.release_date.slice(0, 4)}</BigDates>
+                  </BigDetails>
+                  <BigGenreBox>
+                    {clickedMovie.genre_ids.map((id) =>
+                      genreData?.genres.map(
+                        (g, idx) =>
+                          g.id === id && <BigGenre key={idx}>{g.name}</BigGenre>
+                      )
+                    )}
+                  </BigGenreBox>
                   <BigOverview>{clickedMovie.overview}</BigOverview>
                 </>
               )}

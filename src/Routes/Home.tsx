@@ -61,7 +61,6 @@ function Home() {
     useQuery<IGetMovies>(["movies", "nowPlaying"], getNowPlayingMv);
   const { isLoading: isTopRatedMvLoading, data: topRatedMvData } =
     useQuery<IGetMovies>(["movies", "topRated"], getTopRatedMv);
-
   const LOADING =
     isPopularMvLoading || isNowPlayingMvLoading || isTopRatedMvLoading;
 
@@ -88,7 +87,7 @@ function Home() {
           <MovieSlider
             movieData={{
               movieArr: [...nowPlayingMvData!.results],
-              movieName: "Now_Playing",
+              movieName: "Now Playing",
             }}
           />
           <MovieSlider
@@ -100,7 +99,7 @@ function Home() {
           <MovieSlider
             movieData={{
               movieArr: topRatedMvData!.results,
-              movieName: "Top_Rated",
+              movieName: "Top Rated",
             }}
           />
         </>
