@@ -149,11 +149,25 @@ const BigText = styled.h3`
   font-weight: 600;
 `;
 
+const BigCategory = styled.div`
+  background-color: ${(props) => props.theme.black.darker};
+  border-radius: 5px;
+  font-size: 12px;
+`;
+
+const BigDetailBox = styled.div`
+  width: 100%;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+`;
+
 const BigDetails = styled.div`
-  padding: 10px 20px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 10px;
 `;
 
 const BigDates = styled.div`
@@ -162,7 +176,6 @@ const BigDates = styled.div`
 `;
 
 const BigRates = styled.div`
-  margin-right: 10px;
   font-size: 12px;
   display: flex;
   align-items: center;
@@ -177,17 +190,18 @@ const BigRates = styled.div`
 `;
 
 const BigLanguage = styled.p`
-  font-size: 12px;
+  font-size: 14px;
+  position: relative;
 `;
 
 const BigGenreBox = styled.div`
-  padding-left: 20px;
   display: flex;
   gap: 10px;
 `;
 
 const BigGenre = styled.span`
-  font-size: 13px;
+  width: 100%;
+  font-size: 14px;
   position: relative;
 
   & + &::before {
@@ -376,12 +390,31 @@ function MovieSlider({ movieData }: IMovieData) {
                   <BigTitle>
                     <BigText>{clickedMovie.title}</BigText>
                   </BigTitle>
+                  <BigDetailBox>
+                    <BigDetails>
+                      <BigCategory>개봉일</BigCategory>
 
-                  <BigDetails>
-                    <BigDates>{clickedMovie.release_date.slice(0, 4)}</BigDates>
-                    <BigLanguage>
-                      {clickedMovie.original_language.toLocaleUpperCase()}
-                    </BigLanguage>
+                      <BigDates>
+                        {clickedMovie.release_date.slice(0, 4)}
+                      </BigDates>
+                      <BigCategory>언어</BigCategory>
+
+                      <BigLanguage>
+                        {clickedMovie.original_language.toUpperCase()}
+                      </BigLanguage>
+                      <BigCategory>장르</BigCategory>
+
+                      <BigGenreBox>
+                        {clickedMovie.genre_ids.map((id) =>
+                          genreData?.genres.map(
+                            (g, idx) =>
+                              g.id === id && (
+                                <BigGenre key={idx}>{g.name}</BigGenre>
+                              )
+                          )
+                        )}
+                      </BigGenreBox>
+                    </BigDetails>
                     <BigRates>
                       <>
                         {[
@@ -401,15 +434,7 @@ function MovieSlider({ movieData }: IMovieData) {
                         &nbsp; <p>({`${clickedMovie.vote_count}`})</p>
                       </>
                     </BigRates>
-                  </BigDetails>
-                  <BigGenreBox>
-                    {clickedMovie.genre_ids.map((id) =>
-                      genreData?.genres.map(
-                        (g, idx) =>
-                          g.id === id && <BigGenre key={idx}>{g.name}</BigGenre>
-                      )
-                    )}
-                  </BigGenreBox>
+                  </BigDetailBox>
                   <BigOverview>{clickedMovie.overview}</BigOverview>
                 </>
               )}
