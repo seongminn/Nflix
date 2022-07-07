@@ -12,6 +12,7 @@ export interface IMovie {
   genre_ids: number[];
   vote_average: number;
   vote_count: number;
+  original_language: string;
 }
 
 export interface IGetMovies {

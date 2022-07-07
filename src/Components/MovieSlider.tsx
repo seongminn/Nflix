@@ -136,34 +136,48 @@ const BigCover = styled.div`
   position: relative;
 `;
 
-const BigTitle = styled.h3`
-  position: absolute;
-  bottom: 0;
-
-  color: ${(props) => props.theme.white.lighter};
+const BigTitle = styled.div`
   padding: 20px;
-  font-size: 46px;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const BigText = styled.h3`
+  color: ${(props) => props.theme.white.lighter};
+  font-size: 24px;
   font-weight: 600;
 `;
 
 const BigDetails = styled.div`
-  padding: 20px;
-  padding-bottom: 10px;
+  padding: 10px 20px;
   display: flex;
+  align-items: center;
+  gap: 5px;
 `;
 
 const BigDates = styled.div`
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
 `;
 
 const BigRates = styled.div`
   margin-right: 10px;
-  font-size: 14px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
 
   path {
     fill: #ffeaa7;
   }
+
+  & p {
+    font-size: 12px;
+  }
+`;
+
+const BigLanguage = styled.p`
+  font-size: 12px;
 `;
 
 const BigGenreBox = styled.div`
@@ -358,25 +372,35 @@ function MovieSlider({ movieData }: IMovieData) {
                           : makeImgPath(clickedMovie.poster_path)
                       })`,
                     }}
-                  >
-                    <BigTitle>{clickedMovie.title}</BigTitle>
-                  </BigCover>
+                  ></BigCover>
+                  <BigTitle>
+                    <BigText>{clickedMovie.title}</BigText>
+                  </BigTitle>
 
                   <BigDetails>
-                    <BigRates>
-                      {[
-                        ...Array(
-                          Math.trunc(Math.round(clickedMovie.vote_average) / 2)
-                        ),
-                      ].map((v, index) => (
-                        <FontAwesomeIcon key={index} icon={faStar} />
-                      ))}
-                      {Math.trunc(Math.round(clickedMovie.vote_average) % 2) ? (
-                        <FontAwesomeIcon icon={faStarHalfStroke} />
-                      ) : null}
-                      &nbsp; ({`VOTE: ${clickedMovie.vote_count}`})
-                    </BigRates>
                     <BigDates>{clickedMovie.release_date.slice(0, 4)}</BigDates>
+                    <BigLanguage>
+                      {clickedMovie.original_language.toLocaleUpperCase()}
+                    </BigLanguage>
+                    <BigRates>
+                      <>
+                        {[
+                          ...Array(
+                            Math.trunc(
+                              Math.round(clickedMovie.vote_average) / 2
+                            )
+                          ),
+                        ].map((v, index) => (
+                          <FontAwesomeIcon key={index} icon={faStar} />
+                        ))}
+                        {Math.trunc(
+                          Math.round(clickedMovie.vote_average) % 2
+                        ) ? (
+                          <FontAwesomeIcon icon={faStarHalfStroke} />
+                        ) : null}
+                        &nbsp; <p>({`${clickedMovie.vote_count}`})</p>
+                      </>
+                    </BigRates>
                   </BigDetails>
                   <BigGenreBox>
                     {clickedMovie.genre_ids.map((id) =>
