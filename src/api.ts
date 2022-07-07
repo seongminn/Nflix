@@ -10,6 +10,9 @@ export interface IMovie {
   video: boolean;
   release_date: string;
   genre_ids: [number];
+  popularity: number;
+  vote_average: number;
+  vote_count: number;
 }
 
 export interface IGetMovies {

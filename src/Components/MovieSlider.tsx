@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useMatch, useNavigate, useParams } from "react-router-dom";
 import { makeImgPath } from "../Routes/utils";
 import { IMovie } from "./../api";
-import { faCaretLeft, faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCaretLeft,
+  faCaretRight,
+  faStar,
+  faStarHalfStroke,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSetRecoilState } from "recoil";
 import { overlayState } from "./../atoms";
@@ -123,22 +128,23 @@ const BigCover = styled.div`
   background-size: cover;
   background-position: center center;
   height: 400px;
+  position: relative;
 `;
 
 const BigTitle = styled.h3`
   color: ${(props) => props.theme.white.lighter};
   padding: 20px;
   font-size: 46px;
-  position: relative;
-  top: -90px;
   font-weight: 600;
+  position: absolute;
+  bottom: 0;
 `;
 
 const BigDates = styled.div`
   top: 0;
 `;
 
-const BigRates = styled.div``;
+const BigRates = styled.div<{ star: number }>``;
 
 const BigGenre = styled.div``;
 
@@ -310,9 +316,24 @@ function MovieSlider({ movieData }: IMovieData) {
                           : makeImgPath(clickedMovie.poster_path)
                       })`,
                     }}
-                  />
-                  <BigTitle>{clickedMovie.title}</BigTitle>
+                  >
+                    <BigTitle>{clickedMovie.title}</BigTitle>
+                  </BigCover>
                   <BigDates>{clickedMovie.release_date}</BigDates>
+                  <BigPopularity>{clickedMovie.popularity}</BigPopularity>
+                  <BigRates star={clickedMovie.vote_average}>
+                    {[
+                      ...Array(
+                        Math.trunc(Math.round(clickedMovie.vote_average) / 2)
+                      ),
+                    ].map((v, index) => (
+                      <FontAwesomeIcon key={index} icon={faStar} />
+                    ))}
+                    {Math.trunc(Math.round(clickedMovie.vote_average) % 2) ? (
+                      <FontAwesomeIcon icon={faStarHalfStroke} />
+                    ) : null}
+                    ({clickedMovie.vote_count})
+                  </BigRates>
                   <BigGenre>{clickedMovie.genre_ids}</BigGenre>
                   <BigOverview>{clickedMovie.overview}</BigOverview>
                 </>
