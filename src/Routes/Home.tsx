@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import {
+  getGenre,
   getNowPlayingMv,
   getPopularMv,
   getTopRatedMv,
@@ -9,7 +10,12 @@ import {
 import { makeImgPath } from "./utils";
 import MovieSlider from "../Components/MovieSlider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSpinner,
+  faStar,
+  faStarHalfStroke,
+} from "@fortawesome/free-solid-svg-icons";
+import { IGenreData } from "./../Components/MovieSlider";
 
 const Wrapper = styled.div`
   background-color: black;
@@ -54,6 +60,81 @@ const Overview = styled.p`
   font-weight: 400;
 `;
 
+const Category = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  & p {
+    height: 100%;
+    background-color: black; //${(props) => props.theme.black.darker};
+    color: ${(props) => props.theme.white.darker};
+    border-radius: 5px;
+    font-size: 18px;
+    white-space: nowrap;
+    padding: 2px 5px;
+  }
+`;
+
+const DetailBox = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding-bottom: 20px;
+`;
+
+const Details = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 20px;
+`;
+
+const Dates = styled.div`
+  font-weight: 500;
+  font-size: 18px;
+`;
+
+const Rates = styled.div`
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+
+  path {
+    fill: #ffeaa7;
+  }
+
+  & p {
+    font-size: 16px;
+  }
+`;
+
+const Language = styled.span`
+  font-size: 18px;
+  position: relative;
+`;
+
+const GenreBox = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 5px;
+`;
+
+const Genre = styled.span`
+  width: 100%;
+  font-size: 18px;
+  white-space: nowrap;
+
+  & + &::before {
+    content: "·";
+    color: gray;
+    padding-right: 5px;
+  }
+`;
+
 function Home() {
   const { isLoading: isPopularMvLoading, data: popularMvData } =
     useQuery<IGetMovies>(["movies", "popularMv"], getPopularMv);
@@ -63,6 +144,7 @@ function Home() {
     useQuery<IGetMovies>(["movies", "topRated"], getTopRatedMv);
   const LOADING =
     isPopularMvLoading || isNowPlayingMvLoading || isTopRatedMvLoading;
+  const { data: genreData } = useQuery<IGenreData>("genres", getGenre);
 
   return (
     <Wrapper>
@@ -76,11 +158,56 @@ function Home() {
       ) : (
         <>
           <Banner
-            bgphoto={makeImgPath(popularMvData?.results[0].backdrop_path || "")}
+            bgphoto={makeImgPath(popularMvData?.results[1].backdrop_path || "")}
           >
             <Describe>
-              <Title>{popularMvData?.results[0].title}</Title>
-              <Overview>{popularMvData?.results[0].overview}</Overview>
+              <Title>{popularMvData?.results[1].title}</Title>
+              <DetailBox>
+                <Details>
+                  <Category>
+                    <p>개봉일</p>
+                    <Dates>{popularMvData?.results[1].release_date}</Dates>
+                  </Category>
+                  <Category>
+                    <p>언어</p>
+                    <Language>
+                      {popularMvData?.results[1].original_language.toUpperCase()}
+                    </Language>
+                  </Category>
+
+                  <Category>
+                    <p>장르</p>
+                    <GenreBox>
+                      {popularMvData?.results[1].genre_ids.map((id) =>
+                        genreData?.genres.map(
+                          (g, idx) =>
+                            g.id === id && <Genre key={idx}>{g.name}</Genre>
+                        )
+                      )}
+                    </GenreBox>
+                  </Category>
+                </Details>
+                <Rates>
+                  <>
+                    {[
+                      ...Array(
+                        Math.trunc(
+                          Math.round(popularMvData!.results[1].vote_average) / 2
+                        )
+                      ),
+                    ].map((v, index) => (
+                      <FontAwesomeIcon key={index} icon={faStar} />
+                    ))}
+                    {Math.trunc(
+                      Math.round(popularMvData!.results[1].vote_average) % 2
+                    ) ? (
+                      <FontAwesomeIcon icon={faStarHalfStroke} />
+                    ) : null}
+                    &nbsp; <p>({`${popularMvData!.results[1].vote_count}`})</p>
+                  </>
+                </Rates>
+              </DetailBox>
+              <Overview>{popularMvData!.results[1].overview}</Overview>
             </Describe>
           </Banner>
 

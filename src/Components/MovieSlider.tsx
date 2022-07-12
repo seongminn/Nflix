@@ -138,7 +138,7 @@ const BigCover = styled.div`
 
 const BigTitle = styled.div`
   padding: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
   display: flex;
   flex-direction: column;
 `;
@@ -150,9 +150,18 @@ const BigText = styled.h3`
 `;
 
 const BigCategory = styled.div`
-  background-color: ${(props) => props.theme.black.darker};
-  border-radius: 5px;
-  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  & p {
+    height: 100%;
+    background-color: ${(props) => props.theme.black.darker};
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    padding: 2px 5px;
+  }
 `;
 
 const BigDetailBox = styled.div`
@@ -167,7 +176,9 @@ const BigDetailBox = styled.div`
 const BigDetails = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+
+  gap: 20px;
 `;
 
 const BigDates = styled.div`
@@ -189,25 +200,26 @@ const BigRates = styled.div`
   }
 `;
 
-const BigLanguage = styled.p`
+const BigLanguage = styled.span`
   font-size: 14px;
   position: relative;
 `;
 
 const BigGenreBox = styled.div`
+  width: 100%;
   display: flex;
-  gap: 10px;
+  gap: 5px;
 `;
 
 const BigGenre = styled.span`
   width: 100%;
   font-size: 14px;
-  position: relative;
+  white-space: nowrap;
 
   & + &::before {
-    content: "|";
+    content: "·";
     color: gray;
-    padding-right: 10px;
+    padding-right: 5px;
   }
 `;
 
@@ -215,6 +227,7 @@ const BigOverview = styled.p`
   padding: 20px;
   color: ${(props) => props.theme.white.lighter};
   top: -80px;
+  line-height: 1.3em;
 `;
 
 const rowVars = {
@@ -256,7 +269,7 @@ interface IMovieData {
   };
 }
 
-interface IGenreData {
+export interface IGenreData {
   genres: IGenre[];
 }
 
@@ -339,24 +352,24 @@ function MovieSlider({ movieData }: IMovieData) {
               .slice(1)
               .slice(index * offset, index * offset + offset)
               .map((movie) => (
-                <Box
-                  layoutId={movie.id + movieData.movieName}
-                  onClick={() => onBoxClicked(movie.id)}
-                  key={movie.id + movieData.movieName}
-                  variants={boxVars}
-                  initial="normal"
-                  whileHover="hover"
-                  transition={{ type: "tween" }}
-                  bgphoto={
-                    movie.backdrop_path
-                      ? makeImgPath(movie.backdrop_path, "w500")
-                      : makeImgPath(movie.poster_path, "w500")
-                  }
-                >
+                <div key={movie.id + movieData.movieName}>
+                  <Box
+                    layoutId={movie.id + movieData.movieName}
+                    onClick={() => onBoxClicked(movie.id)}
+                    variants={boxVars}
+                    initial="normal"
+                    whileHover="hover"
+                    transition={{ type: "tween" }}
+                    bgphoto={
+                      movie.backdrop_path
+                        ? makeImgPath(movie.backdrop_path, "w500")
+                        : makeImgPath(movie.poster_path, "w500")
+                    }
+                  ></Box>
                   <Info variants={infoVars}>
                     <h4>{movie.title}</h4>
                   </Info>
-                </Box>
+                </div>
               ))}
             <RightBtn onClick={() => increaseIndex("next")}>
               <FontAwesomeIcon icon={faCaretRight} />
@@ -392,28 +405,30 @@ function MovieSlider({ movieData }: IMovieData) {
                   </BigTitle>
                   <BigDetailBox>
                     <BigDetails>
-                      <BigCategory>개봉일</BigCategory>
+                      <BigCategory>
+                        <p>개봉일</p>
+                        <BigDates>{clickedMovie.release_date}</BigDates>
+                      </BigCategory>
+                      <BigCategory>
+                        <p>언어</p>
+                        <BigLanguage>
+                          {clickedMovie.original_language.toUpperCase()}
+                        </BigLanguage>
+                      </BigCategory>
 
-                      <BigDates>
-                        {clickedMovie.release_date.slice(0, 4)}
-                      </BigDates>
-                      <BigCategory>언어</BigCategory>
-
-                      <BigLanguage>
-                        {clickedMovie.original_language.toUpperCase()}
-                      </BigLanguage>
-                      <BigCategory>장르</BigCategory>
-
-                      <BigGenreBox>
-                        {clickedMovie.genre_ids.map((id) =>
-                          genreData?.genres.map(
-                            (g, idx) =>
-                              g.id === id && (
-                                <BigGenre key={idx}>{g.name}</BigGenre>
-                              )
-                          )
-                        )}
-                      </BigGenreBox>
+                      <BigCategory>
+                        <p>장르</p>
+                        <BigGenreBox>
+                          {clickedMovie.genre_ids.map((id) =>
+                            genreData?.genres.map(
+                              (g, idx) =>
+                                g.id === id && (
+                                  <BigGenre key={idx}>{g.name}</BigGenre>
+                                )
+                            )
+                          )}
+                        </BigGenreBox>
+                      </BigCategory>
                     </BigDetails>
                     <BigRates>
                       <>
