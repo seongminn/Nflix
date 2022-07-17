@@ -26,6 +26,26 @@ export interface IGetMovies {
   total_results: number;
 }
 
+export interface IGetTvs {
+  page: number;
+  results: ITv[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface ITv {
+  backdrop_path: string;
+  first_air_date: string;
+  genre_ids: number[];
+  id: number;
+  name: string;
+  original_language: string;
+  overview: string;
+  poster_path: string;
+  vote_average: number;
+  vote_count: number;
+}
+
 export async function getNowPlayingMv() {
   const res = await fetch(
     `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=ko-KR&page=1&region=kr`
@@ -57,6 +77,20 @@ export async function getGenre() {
 export async function getOnAirTv() {
   const res = await fetch(
     `${BASE_PATH}/tv/on_the_air?api_key=${API_KEY}&language=ko-KR&page=1`
+  );
+  return await res.json();
+}
+
+export async function getPopularTv() {
+  const res = await fetch(
+    `${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko-KR&page=1`
+  );
+  return await res.json();
+}
+
+export async function getTopRatedTv() {
+  const res = await fetch(
+    `${BASE_PATH}/tv/top_rated?api_key=${API_KEY}&language=ko-KR&page=1`
   );
   return await res.json();
 }

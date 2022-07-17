@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useMatch, useNavigate, useParams } from "react-router-dom";
 import { makeImgPath } from "../Routes/utils";
-import { getGenre, IMovie } from "./../api";
+import { getGenre, ITv } from "./../api";
 import {
   faCaretLeft,
   faCaretRight,
@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSetRecoilState } from "recoil";
 import { overlayState } from "./../atoms";
 import { useQuery } from "react-query";
+import { IGenreData } from "./MovieSlider";
 
 const Slider = styled.div`
   position: relative;
@@ -113,7 +114,7 @@ const Overlay = styled(motion.div)`
   z-index: 99;
 `;
 
-const BigMovie = styled(motion.div)`
+const BigTv = styled(motion.div)`
   position: absolute;
   left: 0;
   right: 0;
@@ -262,23 +263,14 @@ const infoVars = {
 
 const offset = 6;
 
-interface IMovieData {
-  movieData: {
-    movieArr: IMovie[];
-    movieName: string;
+interface ITvData {
+  tvData: {
+    tvArr: ITv[];
+    tvName: string;
   };
 }
 
-export interface IGenreData {
-  genres: IGenre[];
-}
-
-interface IGenre {
-  id: number;
-  name: string;
-}
-
-function MovieSlider({ movieData }: IMovieData) {
+function TvSlider({ tvData }: ITvData) {
   const [leaving, setLeaving] = useState(false);
   const [index, setIndex] = useState(0);
   const [back, setBack] = useState(false);
@@ -289,11 +281,11 @@ function MovieSlider({ movieData }: IMovieData) {
   const toggleLeaving = () => setLeaving((prev) => !prev);
 
   const increaseIndex = (dir: string) => {
-    if (movieData) {
+    if (tvData) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = movieData.movieArr.length - 1;
-      const maxIndex = Math.floor(totalMovies / offset) - 1;
+      const totalTvs = tvData.tvArr.length - 1;
+      const maxIndex = Math.floor(totalTvs / offset) - 1;
       if (dir === "prev") {
         setBack(true);
         setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
@@ -304,33 +296,31 @@ function MovieSlider({ movieData }: IMovieData) {
     }
   };
 
-  const onBoxClicked = (movieId: number) => {
+  const onBoxClicked = (tvId: number) => {
     setOverlay(true);
-    navigate(`/movies/${movieData.movieName}/${movieId}`);
+    navigate(`tvs/${tvData.tvName}/${tvId}`);
   };
 
-  const bigMovieMatch = useMatch(`movies/:movieCategory/:movieId`);
+  const bigTvMatch = useMatch(`/tv/tvs/:tvCategory/:tvId`);
 
   const { scrollY } = useViewportScroll();
 
-  const { movieCategory } = useParams();
+  const { tvCategory } = useParams();
 
   const onOverlayClick = () => {
     setOverlay(false);
-    navigate(`/`);
+    navigate(`/tv`);
   };
 
-  const clickedMovie =
-    bigMovieMatch?.params.movieId &&
-    movieData.movieName === movieCategory &&
-    movieData.movieArr.find(
-      (movie) => movie.id + "" === bigMovieMatch.params.movieId
-    );
+  const clickedTv =
+    bigTvMatch?.params.tvId &&
+    tvData.tvName === tvCategory &&
+    tvData.tvArr.find((tv) => tv.id + "" === bigTvMatch.params.tvId);
 
   return (
     <>
       <Slider>
-        <Category>{movieData.movieName}</Category>
+        <Category>{tvData.tvName}</Category>
         <AnimatePresence
           custom={back}
           initial={false}
@@ -348,26 +338,26 @@ function MovieSlider({ movieData }: IMovieData) {
             <LeftBtn onClick={() => increaseIndex("prev")}>
               <FontAwesomeIcon icon={faCaretLeft} />
             </LeftBtn>
-            {movieData.movieArr
+            {tvData.tvArr
               .slice(1)
               .slice(index * offset, index * offset + offset)
-              .map((movie) => (
+              .map((tv) => (
                 <Box
-                  key={movie.id + movieData.movieName}
-                  layoutId={movie.id + movieData.movieName}
-                  onClick={() => onBoxClicked(movie.id)}
+                  key={tv.id + tvData.tvName}
+                  layoutId={tv.id + tvData.tvName}
+                  onClick={() => onBoxClicked(tv.id)}
                   variants={boxVars}
                   initial="normal"
                   whileHover="hover"
                   transition={{ type: "tween" }}
                   bgphoto={
-                    movie.backdrop_path
-                      ? makeImgPath(movie.backdrop_path, "w500")
-                      : makeImgPath(movie.poster_path, "w500")
+                    tv.backdrop_path
+                      ? makeImgPath(tv.backdrop_path, "w500")
+                      : makeImgPath(tv.poster_path, "w500")
                   }
                 >
                   <Info variants={infoVars}>
-                    <h4>{movie.title}</h4>
+                    <h4>{tv.name}</h4>
                   </Info>
                 </Box>
               ))}
@@ -378,48 +368,48 @@ function MovieSlider({ movieData }: IMovieData) {
         </AnimatePresence>
       </Slider>
       <AnimatePresence>
-        {bigMovieMatch && clickedMovie ? (
+        {bigTvMatch && clickedTv ? (
           <>
             <Overlay
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={onOverlayClick}
             />
-            <BigMovie
+            <BigTv
               style={{ top: scrollY.get() + 100 }}
-              layoutId={bigMovieMatch.params.movieId + movieData.movieName}
+              layoutId={bigTvMatch.params.tvId + tvData.tvName}
             >
-              {clickedMovie && (
+              {clickedTv && (
                 <>
                   <BigCover
                     style={{
                       backgroundImage: `linear-gradient(to top, rgb(47, 47, 47), transparent 10%), url(${
-                        clickedMovie.backdrop_path
-                          ? makeImgPath(clickedMovie.backdrop_path)
-                          : makeImgPath(clickedMovie.poster_path)
+                        clickedTv.backdrop_path
+                          ? makeImgPath(clickedTv.backdrop_path)
+                          : makeImgPath(clickedTv.poster_path)
                       })`,
                     }}
                   ></BigCover>
                   <BigTitle>
-                    <BigText>{clickedMovie.title}</BigText>
+                    <BigText>{clickedTv.name}</BigText>
                   </BigTitle>
                   <BigDetailBox>
                     <BigDetails>
                       <BigCategory>
                         <p>개봉일</p>
-                        <BigDates>{clickedMovie.release_date}</BigDates>
+                        <BigDates>{clickedTv.first_air_date}</BigDates>
                       </BigCategory>
                       <BigCategory>
                         <p>언어</p>
                         <BigLanguage>
-                          {clickedMovie.original_language.toUpperCase()}
+                          {clickedTv.original_language.toUpperCase()}
                         </BigLanguage>
                       </BigCategory>
 
                       <BigCategory>
                         <p>장르</p>
                         <BigGenreBox>
-                          {clickedMovie.genre_ids.map((id) =>
+                          {clickedTv.genre_ids.map((id) =>
                             genreData?.genres.map(
                               (g, idx) =>
                                 g.id === id && (
@@ -434,26 +424,22 @@ function MovieSlider({ movieData }: IMovieData) {
                       <>
                         {[
                           ...Array(
-                            Math.trunc(
-                              Math.round(clickedMovie.vote_average) / 2
-                            )
+                            Math.trunc(Math.round(clickedTv.vote_average) / 2)
                           ),
                         ].map((v, index) => (
                           <FontAwesomeIcon key={index} icon={faStar} />
                         ))}
-                        {Math.trunc(
-                          Math.round(clickedMovie.vote_average) % 2
-                        ) ? (
+                        {Math.trunc(Math.round(clickedTv.vote_average) % 2) ? (
                           <FontAwesomeIcon icon={faStarHalfStroke} />
                         ) : null}
-                        &nbsp; <p>({`${clickedMovie.vote_count}`})</p>
+                        &nbsp; <p>({`${clickedTv.vote_count}`})</p>
                       </>
                     </BigRates>
                   </BigDetailBox>
-                  <BigOverview>{clickedMovie.overview}</BigOverview>
+                  <BigOverview>{clickedTv.overview}</BigOverview>
                 </>
               )}
-            </BigMovie>
+            </BigTv>
           </>
         ) : null}
       </AnimatePresence>
@@ -461,4 +447,4 @@ function MovieSlider({ movieData }: IMovieData) {
   );
 }
 
-export default MovieSlider;
+export default TvSlider;
