@@ -1,20 +1,14 @@
-import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 import { useState } from "react";
 import { useMatch, useNavigate, useParams } from "react-router-dom";
 import { makeImgPath } from "../Routes/utils";
-import { getGenre, ITv } from "./../api";
-import {
-  faCaretLeft,
-  faCaretRight,
-  faStar,
-  faStarHalfStroke,
-} from "@fortawesome/free-solid-svg-icons";
+import { ITv } from "./../api";
+import { faCaretLeft, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSetRecoilState } from "recoil";
 import { overlayState } from "./../atoms";
-import { useQuery } from "react-query";
-import { IGenreData } from "./MovieSlider";
+import BigTV from "./BigTV";
 
 const Slider = styled.div`
   position: relative;
@@ -115,123 +109,6 @@ const Overlay = styled(motion.div)`
   z-index: 99;
 `;
 
-const BigTv = styled(motion.div)`
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  width: 40%;
-  height: 80vh;
-  background-color: ${(props) => props.theme.black.lighter};
-  border-radius: 5px;
-  overflow: hidden;
-  /* box-shadow: 2px 2px 18px 8px ${(props) => props.theme.black.veryDark}; */
-
-  z-index: 999;
-`;
-
-const BigCover = styled.div`
-  width: 100%;
-  background-size: cover;
-  background-position: center center;
-  height: 400px;
-  position: relative;
-`;
-
-const BigTitle = styled.div`
-  padding: 20px;
-  padding-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const BigText = styled.h3`
-  color: ${(props) => props.theme.white.lighter};
-  font-size: 24px;
-  font-weight: 600;
-`;
-
-const BigCategory = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  & p {
-    height: 100%;
-    background-color: ${(props) => props.theme.black.darker};
-    border-radius: 5px;
-    font-size: 12px;
-    white-space: nowrap;
-    padding: 2px 5px;
-  }
-`;
-
-const BigDetailBox = styled.div`
-  width: 100%;
-  padding: 0 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 5px;
-`;
-
-const BigDetails = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 20px;
-`;
-
-const BigDates = styled.div`
-  font-weight: 500;
-  font-size: 14px;
-`;
-
-const BigRates = styled.div`
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-
-  path {
-    fill: #ffeaa7;
-  }
-
-  & p {
-    font-size: 12px;
-  }
-`;
-
-const BigLanguage = styled.span`
-  font-size: 14px;
-  position: relative;
-`;
-
-const BigGenreBox = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 5px;
-`;
-
-const BigGenre = styled.span`
-  width: 100%;
-  font-size: 14px;
-  white-space: nowrap;
-
-  & + &::before {
-    content: "·";
-    color: gray;
-    padding-right: 5px;
-  }
-`;
-
-const BigOverview = styled.p`
-  padding: 20px;
-  color: ${(props) => props.theme.white.lighter};
-  top: -80px;
-  line-height: 1.3em;
-`;
-
 const rowVars = {
   hidden: (back: boolean) => ({
     x: back ? -window.outerWidth - 10 : window.outerWidth + 10,
@@ -275,7 +152,6 @@ function TvSlider({ tvData }: ITvData) {
   const [leaving, setLeaving] = useState(false);
   const [index, setIndex] = useState(0);
   const [back, setBack] = useState(false);
-  const { data: genreData } = useQuery<IGenreData>("genres", getGenre);
   const setOverlay = useSetRecoilState(overlayState);
   const navigate = useNavigate();
 
@@ -303,8 +179,6 @@ function TvSlider({ tvData }: ITvData) {
   };
 
   const bigTvMatch = useMatch(`/tv/tvs/:tvCategory/:tvId`);
-
-  const { scrollY } = useViewportScroll();
 
   const { tvCategory } = useParams();
 
@@ -376,71 +250,11 @@ function TvSlider({ tvData }: ITvData) {
               exit={{ opacity: 0 }}
               onClick={onOverlayClick}
             />
-            <BigTv
-              style={{ top: scrollY.get() + 100 }}
-              layoutId={bigTvMatch.params.tvId + tvData.tvName}
-            >
-              {clickedTv && (
-                <>
-                  <BigCover
-                    style={{
-                      backgroundImage: `linear-gradient(to top, rgb(47, 47, 47), transparent 10%), url(${
-                        clickedTv.backdrop_path
-                          ? makeImgPath(clickedTv.backdrop_path)
-                          : makeImgPath(clickedTv.poster_path)
-                      })`,
-                    }}
-                  ></BigCover>
-                  <BigTitle>
-                    <BigText>{clickedTv.name}</BigText>
-                  </BigTitle>
-                  <BigDetailBox>
-                    <BigDetails>
-                      <BigCategory>
-                        <p>개봉일</p>
-                        <BigDates>{clickedTv.first_air_date}</BigDates>
-                      </BigCategory>
-                      <BigCategory>
-                        <p>언어</p>
-                        <BigLanguage>
-                          {clickedTv.original_language.toUpperCase()}
-                        </BigLanguage>
-                      </BigCategory>
-
-                      <BigCategory>
-                        <p>장르</p>
-                        <BigGenreBox>
-                          {clickedTv.genre_ids.map((id) =>
-                            genreData?.genres.map(
-                              (g, idx) =>
-                                g.id === id && (
-                                  <BigGenre key={idx}>{g.name}</BigGenre>
-                                )
-                            )
-                          )}
-                        </BigGenreBox>
-                      </BigCategory>
-                    </BigDetails>
-                    <BigRates>
-                      <>
-                        {[
-                          ...Array(
-                            Math.trunc(Math.round(clickedTv.vote_average) / 2)
-                          ),
-                        ].map((v, index) => (
-                          <FontAwesomeIcon key={index} icon={faStar} />
-                        ))}
-                        {Math.trunc(Math.round(clickedTv.vote_average) % 2) ? (
-                          <FontAwesomeIcon icon={faStarHalfStroke} />
-                        ) : null}
-                        &nbsp; <p>({`${clickedTv.vote_count}`})</p>
-                      </>
-                    </BigRates>
-                  </BigDetailBox>
-                  <BigOverview>{clickedTv.overview}</BigOverview>
-                </>
-              )}
-            </BigTv>
+            <BigTV
+              tvId={bigTvMatch?.params.tvId}
+              clickedTV={clickedTv}
+              tvName={tvData.tvName}
+            />
           </>
         ) : null}
       </AnimatePresence>

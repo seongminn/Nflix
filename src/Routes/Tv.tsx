@@ -9,8 +9,8 @@ import {
   faStarHalfStroke,
 } from "@fortawesome/free-solid-svg-icons";
 import { makeImgPath } from "./utils";
-import { IGenreData } from "./../Components/MovieSlider";
 import TvSlider from "./../Components/TVSlider";
+import { IGenreData } from "./../Components/BigMoive";
 
 const Wrapper = styled.div`
   background-color: black;
