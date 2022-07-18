@@ -55,12 +55,13 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
   height: 200px;
   font-size: 66px;
   border-radius: 5px;
+
   cursor: pointer;
 
-  &:first-child {
+  & :first-child {
     transform-origin: center left;
   }
-  &:last-child {
+  & :last-child {
     transform-origin: center right;
   }
 `;

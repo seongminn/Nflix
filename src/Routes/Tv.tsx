@@ -156,27 +156,27 @@ function Tv() {
       ) : (
         <>
           <Banner
-            bgphoto={makeImgPath(onAirTVData?.results[14].backdrop_path || "")}
+            bgphoto={makeImgPath(onAirTVData?.results[10].backdrop_path || "")}
           >
             <Describe>
-              <Title>{onAirTVData?.results[14].name}</Title>
+              <Title>{onAirTVData?.results[10].name}</Title>
               <DetailBox>
                 <Details>
                   <Category>
                     <p>개봉일</p>
-                    <Dates>{onAirTVData?.results[14].first_air_date}</Dates>
+                    <Dates>{onAirTVData?.results[10].first_air_date}</Dates>
                   </Category>
                   <Category>
                     <p>언어</p>
                     <Language>
-                      {onAirTVData?.results[14].original_language.toUpperCase()}
+                      {onAirTVData?.results[10].original_language.toUpperCase()}
                     </Language>
                   </Category>
 
                   <Category>
                     <p>장르</p>
                     <GenreBox>
-                      {onAirTVData?.results[14].genre_ids.map((id) =>
+                      {onAirTVData?.results[10].genre_ids.map((id) =>
                         genreData?.genres.map(
                           (g, idx) =>
                             g.id === id && <Genre key={idx}>{g.name}</Genre>
@@ -190,37 +190,36 @@ function Tv() {
                     {[
                       ...Array(
                         Math.trunc(
-                          Math.round(popularTVData!.results[14].vote_average) /
-                            2
+                          Math.round(onAirTVData!.results[10].vote_average) / 2
                         )
                       ),
                     ].map((v, index) => (
                       <FontAwesomeIcon key={index} icon={faStar} />
                     ))}
                     {Math.trunc(
-                      Math.round(popularTVData!.results[14].vote_average) % 2
+                      Math.round(onAirTVData!.results[10].vote_average) % 2
                     ) ? (
                       <FontAwesomeIcon icon={faStarHalfStroke} />
                     ) : null}
-                    &nbsp; <p>({`${popularTVData!.results[14].vote_count}`})</p>
+                    &nbsp; <p>({`${onAirTVData!.results[10].vote_count}`})</p>
                   </>
                 </Rates>
               </DetailBox>
-              <Overview>{popularTVData!.results[14].overview}</Overview>
+              <Overview>{onAirTVData!.results[10].overview}</Overview>
             </Describe>
           </Banner>
 
           <TvSlider
             tvData={{
-              tvArr: [...popularTVData!.results],
-              tvName: "Popular",
+              tvArr: [...onAirTVData!.results],
+              tvName: "On Air",
             }}
           />
 
           <TvSlider
             tvData={{
-              tvArr: [...onAirTVData!.results],
-              tvName: "On Air",
+              tvArr: [...popularTVData!.results],
+              tvName: "Popular",
             }}
           />
 
