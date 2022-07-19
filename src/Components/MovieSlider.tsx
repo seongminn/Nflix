@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useMatch, useNavigate, useParams } from "react-router-dom";
 import { makeImgPath } from "../Routes/utils";
 import { IMovie } from "./../api";
-import { faCaretLeft, faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCaretLeft,
+  faCaretRight,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSetRecoilState } from "recoil";
 import { overlayState } from "./../atoms";
@@ -41,24 +45,38 @@ const Row = styled(motion.div)`
   padding: 0 60px;
 `;
 
-const Box = styled(motion.div)<{ idx: number }>`
-  background-position: center center;
+const Box = styled(motion.div)`
   height: 200px;
   font-size: 66px;
   cursor: pointer;
-
-  transform-origin: center
-    ${(props) =>
-      props.idx === 0 ? "left" : props.idx === 5 ? "right" : "center"};
 `;
 
 const BoxImg = styled.div<{ bgphoto: string }>`
+  position: relative;
   height: 200px;
   border-radius: 5px;
 
   background-image: url(${(props) => props.bgphoto});
   background-color: white;
   background-size: cover;
+`;
+
+const BoxHover = styled.div`
+  width: 100%;
+  height: 100%;
+  /* background-color: rgba(0, 0, 0, 1); */
+  opacity: 0.7;
+  position: absolute;
+`;
+
+const Stars = styled.div`
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+
+  path {
+    fill: #ffeaa7;
+  }
 `;
 
 const Info = styled(motion.div)`
@@ -224,7 +242,7 @@ function MovieSlider({ movieData }: IMovieData) {
             {movieData.movieArr
               .slice(1)
               .slice(index * offset, index * offset + offset)
-              .map((movie, idx) => (
+              .map((movie) => (
                 <Box
                   key={movie.id + movieData.movieName}
                   layoutId={movie.id + movieData.movieName}
@@ -233,7 +251,6 @@ function MovieSlider({ movieData }: IMovieData) {
                   initial="normal"
                   whileHover="hover"
                   transition={{ type: "tween" }}
-                  idx={idx}
                 >
                   <BoxImg
                     bgphoto={
@@ -241,7 +258,13 @@ function MovieSlider({ movieData }: IMovieData) {
                         ? makeImgPath(movie.backdrop_path, "w500")
                         : makeImgPath(movie.poster_path, "w500")
                     }
-                  />
+                  >
+                    <BoxHover />
+                    <Stars>
+                      <FontAwesomeIcon icon={faStar} /> &nbsp;
+                      {movie.vote_average}
+                    </Stars>
+                  </BoxImg>
                   <Info variants={infoVars}>
                     <h4>{movie.title}</h4>
                   </Info>

@@ -145,7 +145,7 @@ function Home() {
   const LOADING =
     isPopularMvLoading || isNowPlayingMvLoading || isTopRatedMvLoading;
   const { data: genreData } = useQuery<IGenreData>("genres", getGenre);
-  console.log(nowPlayingMvData);
+
   return (
     <Wrapper>
       {LOADING ? (
