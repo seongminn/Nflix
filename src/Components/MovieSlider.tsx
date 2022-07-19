@@ -41,7 +41,7 @@ const Row = styled(motion.div)`
   padding: 0 60px;
 `;
 
-const Box = styled(motion.div)<{ bgphoto: string }>`
+const Box = styled(motion.div)<{ bgphoto: string; idx: number }>`
   background-image: url(${(props) => props.bgphoto});
   background-color: white;
   background-size: cover;
@@ -51,12 +51,9 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
   border-radius: 5px;
   cursor: pointer;
 
-  &:first-child {
-    transform-origin: center left;
-  }
-  &:last-child {
-    transform-origin: center right;
-  }
+  transform-origin: center
+    ${(props) =>
+      props.idx === 0 ? "left" : props.idx === 5 ? "right" : "center"};
 `;
 
 const Info = styled(motion.div)`
@@ -66,6 +63,8 @@ const Info = styled(motion.div)`
   position: absolute;
   width: 100%;
   bottom: 0;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 
   h4 {
     text-align: center;
@@ -127,7 +126,7 @@ const boxVars = {
   hover: {
     scale: 1.3,
     transition: { delay: 0.5, duration: 0.3, type: "tween" },
-    y: -50,
+    y: -20,
   },
 };
 
@@ -217,7 +216,7 @@ function MovieSlider({ movieData }: IMovieData) {
             {movieData.movieArr
               .slice(1)
               .slice(index * offset, index * offset + offset)
-              .map((movie) => (
+              .map((movie, idx) => (
                 <Box
                   key={movie.id + movieData.movieName}
                   layoutId={movie.id + movieData.movieName}
@@ -231,6 +230,7 @@ function MovieSlider({ movieData }: IMovieData) {
                       ? makeImgPath(movie.backdrop_path, "w500")
                       : makeImgPath(movie.poster_path, "w500")
                   }
+                  idx={idx}
                 >
                   <Info variants={infoVars}>
                     <h4>{movie.title}</h4>

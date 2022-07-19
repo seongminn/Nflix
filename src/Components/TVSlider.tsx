@@ -41,7 +41,7 @@ const Row = styled(motion.div)`
   padding: 0 60px;
 `;
 
-const Box = styled(motion.div)<{ bgphoto: string }>`
+const Box = styled(motion.div)<{ bgphoto: string; idx: number }>`
   background-image: url(${(props) => props.bgphoto});
   background-color: white;
   background-size: cover;
@@ -52,12 +52,9 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
 
   cursor: pointer;
 
-  & :first-child {
-    transform-origin: center left;
-  }
-  & :last-child {
-    transform-origin: center right;
-  }
+  transform-origin: center
+    ${(props) =>
+      props.idx === 0 ? "left" : props.idx === 5 ? "right" : "center"};
 `;
 
 const Info = styled(motion.div)`
@@ -216,7 +213,7 @@ function TvSlider({ tvData }: ITvData) {
             {tvData.tvArr
               .slice(1)
               .slice(index * offset, index * offset + offset)
-              .map((tv) => (
+              .map((tv, idx) => (
                 <Box
                   key={tv.id + tvData.tvName}
                   layoutId={tv.id + tvData.tvName}
@@ -230,6 +227,7 @@ function TvSlider({ tvData }: ITvData) {
                       ? makeImgPath(tv.backdrop_path, "w500")
                       : makeImgPath(tv.poster_path, "w500")
                   }
+                  idx={idx}
                 >
                   <Info variants={infoVars}>
                     <h4>{tv.name}</h4>
