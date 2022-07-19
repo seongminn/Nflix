@@ -145,7 +145,7 @@ function Home() {
   const LOADING =
     isPopularMvLoading || isNowPlayingMvLoading || isTopRatedMvLoading;
   const { data: genreData } = useQuery<IGenreData>("genres", getGenre);
-
+  console.log(nowPlayingMvData);
   return (
     <Wrapper>
       {LOADING ? (
@@ -158,27 +158,27 @@ function Home() {
       ) : (
         <>
           <Banner
-            bgphoto={makeImgPath(popularMvData?.results[1].backdrop_path || "")}
+            bgphoto={makeImgPath(popularMvData?.results[0].backdrop_path || "")}
           >
             <Describe>
-              <Title>{popularMvData?.results[1].title}</Title>
+              <Title>{popularMvData?.results[0].title}</Title>
               <DetailBox>
                 <Details>
                   <Category>
                     <p>개봉일</p>
-                    <Dates>{popularMvData?.results[1].release_date}</Dates>
+                    <Dates>{popularMvData?.results[0].release_date}</Dates>
                   </Category>
                   <Category>
                     <p>언어</p>
                     <Language>
-                      {popularMvData?.results[1].original_language.toUpperCase()}
+                      {popularMvData?.results[0].original_language.toUpperCase()}
                     </Language>
                   </Category>
 
                   <Category>
                     <p>장르</p>
                     <GenreBox>
-                      {popularMvData?.results[1].genre_ids.map((id) =>
+                      {popularMvData?.results[0].genre_ids.map((id) =>
                         genreData?.genres.map(
                           (g, idx) =>
                             g.id === id && <Genre key={idx}>{g.name}</Genre>
@@ -192,22 +192,22 @@ function Home() {
                     {[
                       ...Array(
                         Math.trunc(
-                          Math.round(popularMvData!.results[1].vote_average) / 2
+                          Math.round(popularMvData!.results[0].vote_average) / 2
                         )
                       ),
                     ].map((v, index) => (
                       <FontAwesomeIcon key={index} icon={faStar} />
                     ))}
                     {Math.trunc(
-                      Math.round(popularMvData!.results[1].vote_average) % 2
+                      Math.round(popularMvData!.results[0].vote_average) % 2
                     ) ? (
                       <FontAwesomeIcon icon={faStarHalfStroke} />
                     ) : null}
-                    &nbsp; <p>({`${popularMvData!.results[1].vote_count}`})</p>
+                    &nbsp; <p>({`${popularMvData!.results[0].vote_count}`})</p>
                   </>
                 </Rates>
               </DetailBox>
-              <Overview>{popularMvData!.results[1].overview}</Overview>
+              <Overview>{popularMvData!.results[0].overview}</Overview>
             </Describe>
           </Banner>
 

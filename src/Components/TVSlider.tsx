@@ -41,15 +41,10 @@ const Row = styled(motion.div)`
   padding: 0 60px;
 `;
 
-const Box = styled(motion.div)<{ bgphoto: string; idx: number }>`
-  background-image: url(${(props) => props.bgphoto});
-  background-color: white;
-  background-size: cover;
+const Box = styled(motion.div)<{ idx: number }>`
   background-position: center center;
   height: 200px;
   font-size: 66px;
-  border-radius: 5px;
-
   cursor: pointer;
 
   transform-origin: center
@@ -57,17 +52,32 @@ const Box = styled(motion.div)<{ bgphoto: string; idx: number }>`
       props.idx === 0 ? "left" : props.idx === 5 ? "right" : "center"};
 `;
 
+const BoxImg = styled.div<{ bgphoto: string }>`
+  height: 200px;
+  border-radius: 5px;
+
+  background-image: url(${(props) => props.bgphoto});
+  background-color: white;
+  background-size: cover;
+`;
+
 const Info = styled(motion.div)`
-  padding: 10px;
-  background-color: ${(props) => props.theme.black.lighter};
-  opacity: 0;
-  position: absolute;
+  padding: 10px 0 10px 10px;
+  background-color: transparent;
+  opacity: 1;
   width: 100%;
-  bottom: 0;
 
   h4 {
-    text-align: center;
-    font-size: 14px;
+    text-align: right;
+    font-size: 16px;
+    line-height: 1.47;
+    font-weight: 700;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -123,9 +133,8 @@ const boxVars = {
     scale: 1,
   },
   hover: {
-    scale: 1.3,
-    transition: { delay: 0.5, duration: 0.3, type: "tween" },
-    y: -50,
+    transition: { delay: 0, duration: 0.3, type: "tween" },
+    y: -10,
   },
 };
 
@@ -222,13 +231,16 @@ function TvSlider({ tvData }: ITvData) {
                   initial="normal"
                   whileHover="hover"
                   transition={{ type: "tween" }}
-                  bgphoto={
-                    tv.backdrop_path
-                      ? makeImgPath(tv.backdrop_path, "w500")
-                      : makeImgPath(tv.poster_path, "w500")
-                  }
                   idx={idx}
                 >
+                  <BoxImg
+                    bgphoto={
+                      tv.backdrop_path
+                        ? makeImgPath(tv.backdrop_path, "w500")
+                        : makeImgPath(tv.poster_path, "w500")
+                    }
+                  />
+
                   <Info variants={infoVars}>
                     <h4>{tv.name}</h4>
                   </Info>
