@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSetRecoilState } from "recoil";
 import { overlayState } from "./../atoms";
 import BigTV from "./BigTV";
+import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 
 const Slider = styled.div`
   position: relative;
@@ -65,21 +66,36 @@ const BoxImg = styled.div<{ bgphoto: string }>`
   background-size: cover;
 `;
 
-const BoxHover = styled(motion.div)`
+const BoxOverlay = styled(motion.div)`
   width: 100%;
   height: 100%;
   background: linear-gradient(transparent, 10%, black);
   opacity: 0;
   position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 `;
 
 const Stars = styled.div`
   font-size: 16px;
   display: flex;
   align-items: center;
+  padding: 10px;
 
   path {
     fill: #ffeaa7;
+  }
+`;
+
+const Hearts = styled(motion.div)<{ clickedHearts: boolean }>`
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+
+  path {
+    fill: ${(props) => (props.clickedHearts ? "#ff6b81" : "#d9d9d9")};
   }
 `;
 
@@ -169,6 +185,12 @@ const hoverVars = {
   },
 };
 
+const heartVars = {
+  hover: {
+    transition: { delay: 0, duration: 0.3, type: "tween" },
+  },
+};
+
 const offset = 6;
 
 interface ITvData {
@@ -182,6 +204,8 @@ function TvSlider({ tvData }: ITvData) {
   const [leaving, setLeaving] = useState(false);
   const [index, setIndex] = useState(0);
   const [back, setBack] = useState(false);
+  const [clickedHeart, setClickedHeart] = useState(false);
+
   const setOverlay = useSetRecoilState(overlayState);
   const navigate = useNavigate();
 
@@ -215,6 +239,11 @@ function TvSlider({ tvData }: ITvData) {
   const onOverlayClick = () => {
     setOverlay(false);
     navigate(`/tv`);
+  };
+
+  const onClickHeart = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setClickedHeart((prev) => !prev);
   };
 
   const clickedTv =
@@ -263,11 +292,19 @@ function TvSlider({ tvData }: ITvData) {
                         : makeImgPath(tv.poster_path, "w500")
                     }
                   >
-                    <BoxHover variants={hoverVars} />
-                    <Stars>
-                      <FontAwesomeIcon icon={faStar} /> &nbsp;
-                      {tv.vote_average}
-                    </Stars>
+                    <BoxOverlay variants={hoverVars}>
+                      <Stars>
+                        <FontAwesomeIcon icon={faStar} /> &nbsp;
+                        {tv.vote_average}
+                      </Stars>
+                      <Hearts
+                        onClick={onClickHeart}
+                        variants={heartVars}
+                        clickedHearts={clickedHeart}
+                      >
+                        {clickedHeart ? <HeartFilled /> : <HeartOutlined />}
+                      </Hearts>
+                    </BoxOverlay>
                   </BoxImg>
 
                   <Info>
