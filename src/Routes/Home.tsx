@@ -67,7 +67,7 @@ const Category = styled.div`
 
   & p {
     height: 100%;
-    background-color: black; //${(props) => props.theme.black.darker};
+    background-color: #313131; //${(props) => props.theme.black.darker};
     color: ${(props) => props.theme.white.darker};
     border-radius: 5px;
     font-size: 18px;

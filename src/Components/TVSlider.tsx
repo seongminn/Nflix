@@ -49,6 +49,10 @@ const Box = styled(motion.div)`
   height: 200px;
   font-size: 66px;
   cursor: pointer;
+
+  &:hover h4 {
+    color: white;
+  }
 `;
 
 const BoxImg = styled.div<{ bgphoto: string }>`
@@ -61,11 +65,11 @@ const BoxImg = styled.div<{ bgphoto: string }>`
   background-size: cover;
 `;
 
-const BoxHover = styled.div`
+const BoxHover = styled(motion.div)`
   width: 100%;
   height: 100%;
-  /* background-color: rgba(0, 0, 0, 1); */
-  opacity: 0.7;
+  background: linear-gradient(transparent, 10%, black);
+  opacity: 0;
   position: absolute;
 `;
 
@@ -86,6 +90,7 @@ const Info = styled(motion.div)`
   width: 100%;
 
   h4 {
+    color: #ffffffde;
     text-align: right;
     font-size: 16px;
     line-height: 1.47;
@@ -96,6 +101,7 @@ const Info = styled(motion.div)`
 
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 0.1s;
   }
 `;
 
@@ -156,10 +162,10 @@ const boxVars = {
   },
 };
 
-const infoVars = {
+const hoverVars = {
   hover: {
     opacity: 1,
-    transition: { delay: 0.5, duration: 0.3, type: "tween" },
+    transition: { delay: 0, duration: 0.3, type: "tween" },
   },
 };
 
@@ -257,14 +263,14 @@ function TvSlider({ tvData }: ITvData) {
                         : makeImgPath(tv.poster_path, "w500")
                     }
                   >
-                    <BoxHover />
+                    <BoxHover variants={hoverVars} />
                     <Stars>
                       <FontAwesomeIcon icon={faStar} /> &nbsp;
                       {tv.vote_average}
                     </Stars>
                   </BoxImg>
 
-                  <Info variants={infoVars}>
+                  <Info>
                     <h4>{tv.name}</h4>
                   </Info>
                 </Box>
