@@ -57,14 +57,14 @@ export async function getNowPlayingMv() {
 
 export async function getPopularMv() {
   const res = await fetch(
-    `${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=1&region=kr`
+    `${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=1`
   );
   return await res.json();
 }
 
 export async function getTopRatedMv() {
   const res = await fetch(`
-		${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=ko-KR&page=1&region=kr
+		${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=ko-KR&page=1
 	`);
   return await res.json();
 }

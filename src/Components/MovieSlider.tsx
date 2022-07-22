@@ -10,8 +10,8 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSetRecoilState } from "recoil";
-import { overlayState } from "./../atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { favsState, overlayState } from "./../atoms";
 import BigMovie from "./BigMoive";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 
@@ -88,14 +88,15 @@ const Stars = styled.div`
   }
 `;
 
-const Hearts = styled(motion.div)<{ clickedHearts: boolean }>`
+const Hearts = styled(motion.div)<{ clickedhearts: string }>`
   font-size: 16px;
   display: flex;
   align-items: center;
   padding: 10px;
 
   path {
-    fill: ${(props) => (props.clickedHearts ? "#ff6b81" : "#d9d9d9")};
+    fill: ${(props) =>
+      props.clickedhearts === "true" ? "#ff6b81" : "#d9d9d9"};
   }
 `;
 
@@ -185,12 +186,6 @@ const hoverVars = {
   },
 };
 
-const heartVars = {
-  hover: {
-    transition: { delay: 0, duration: 0.3, type: "tween" },
-  },
-};
-
 const offset = 6;
 
 export interface IMovieData {
@@ -205,6 +200,7 @@ function MovieSlider({ movieData }: IMovieData) {
   const [index, setIndex] = useState(0);
   const [back, setBack] = useState(false);
   const [clickedHeart, setClickedHeart] = useState(false);
+  const [favs, setFavs] = useRecoilState(favsState);
   const setOverlay = useSetRecoilState(overlayState);
   const navigate = useNavigate();
 
@@ -240,9 +236,31 @@ function MovieSlider({ movieData }: IMovieData) {
     navigate(`/`);
   };
 
-  const onClickHeart = (e: React.MouseEvent<HTMLDivElement>) => {
+  // const onClickHeart = (e: React.MouseEvent<HTMLDivElement>) => {
+  //   e.stopPropagation();
+  //   setClickedHeart((prev) => !prev);
+  // };
+
+  const onClickHeart = (e: React.MouseEvent<HTMLDivElement>, id: number) => {
     e.stopPropagation();
-    setClickedHeart((prev) => !prev);
+    setFavs((favs: number[]) => {
+      const prevFavs = [...favs];
+
+      const favIndex = prevFavs.findIndex((favs) => favs === id);
+
+      let resultFavs;
+      if (favIndex === -1) {
+        resultFavs = [...prevFavs, id];
+      } else {
+        console.log(prevFavs, favIndex);
+        prevFavs.splice(favIndex, 1);
+
+        resultFavs = prevFavs;
+        console.log(prevFavs);
+      }
+
+      return resultFavs;
+    });
   };
 
   const clickedMovie =
@@ -299,11 +317,14 @@ function MovieSlider({ movieData }: IMovieData) {
                         {movie.vote_average}
                       </Stars>
                       <Hearts
-                        onClick={onClickHeart}
-                        variants={heartVars}
-                        clickedHearts={clickedHeart}
+                        onClick={(e) => onClickHeart(e, movie.id)}
+                        clickedhearts={favs.includes(movie.id) + ""}
                       >
-                        {clickedHeart ? <HeartFilled /> : <HeartOutlined />}
+                        {favs.includes(movie.id) ? (
+                          <HeartFilled />
+                        ) : (
+                          <HeartOutlined />
+                        )}
                       </Hearts>
                     </BoxOverlay>
                   </BoxImg>
