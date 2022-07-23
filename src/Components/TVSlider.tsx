@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { favsState, overlayState } from "./../atoms";
+import { favsTVState, overlayState } from "./../atoms";
 import BigTV from "./BigTV";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 
@@ -88,7 +88,7 @@ const Stars = styled.div`
   }
 `;
 
-const Hearts = styled(motion.div)<{ clickedHearts: string }>`
+const Hearts = styled(motion.div)<{ clickedhearts: string | undefined }>`
   font-size: 16px;
   display: flex;
   align-items: center;
@@ -96,7 +96,7 @@ const Hearts = styled(motion.div)<{ clickedHearts: string }>`
 
   path {
     fill: ${(props) =>
-      props.clickedHearts === "true" ? "#ff6b81" : "#d9d9d9"};
+      props.clickedhearts === "true" ? "#ff6b81" : "#d9d9d9"};
   }
 `;
 
@@ -205,8 +205,7 @@ function TvSlider({ tvData }: ITvData) {
   const [leaving, setLeaving] = useState(false);
   const [index, setIndex] = useState(0);
   const [back, setBack] = useState(false);
-  const [clickedHeart, setClickedHeart] = useState(false);
-  const [favs, setFavs] = useRecoilState(favsState);
+  const [favs, setFavs] = useRecoilState(favsTVState);
 
   const setOverlay = useSetRecoilState(overlayState);
   const navigate = useNavigate();
@@ -243,27 +242,20 @@ function TvSlider({ tvData }: ITvData) {
     navigate(`/tv`);
   };
 
-  // const onClickHeart = (e: React.MouseEvent<HTMLDivElement>) => {
-  //   e.stopPropagation();
-  //   setClickedHeart((prev) => !prev);
-  // };
-
-  const onClickHeart = (e: React.MouseEvent<HTMLDivElement>, id: number) => {
+  const onClickHeart = (e: React.MouseEvent<HTMLDivElement>, tv: ITv) => {
     e.stopPropagation();
-    setFavs((favs: number[]) => {
+    setFavs((favs: ITv[]) => {
       const prevFavs = [...favs];
 
-      const favIndex = prevFavs.findIndex((favs) => favs === id);
+      const favIndex = prevFavs.findIndex((favs) => favs.id === tv.id);
 
       let resultFavs;
       if (favIndex === -1) {
-        resultFavs = [...prevFavs, id];
+        resultFavs = [...prevFavs, tv];
       } else {
-        console.log(prevFavs, favIndex);
         prevFavs.splice(favIndex, 1);
 
         resultFavs = prevFavs;
-        console.log(prevFavs);
       }
 
       return resultFavs;
@@ -322,11 +314,13 @@ function TvSlider({ tvData }: ITvData) {
                         {tv.vote_average}
                       </Stars>
                       <Hearts
-                        onClick={(e) => onClickHeart(e, tv.id)}
+                        onClick={(e) => onClickHeart(e, tv)}
                         variants={heartVars}
-                        clickedHearts={favs.includes(tv.id) + ""}
+                        clickedhearts={
+                          favs.find((fav) => fav.id === tv.id) && true + ""
+                        }
                       >
-                        {favs.includes(tv.id) ? (
+                        {favs.find((fav) => fav.id === tv.id) ? (
                           <HeartFilled />
                         ) : (
                           <HeartOutlined />

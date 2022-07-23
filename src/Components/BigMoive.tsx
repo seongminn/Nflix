@@ -5,6 +5,8 @@ import { makeImgPath } from "../Routes/utils";
 import { useQuery } from "react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faStarHalfStroke } from "@fortawesome/free-solid-svg-icons";
+import { useRecoilValue } from "recoil";
+import { favsMovieState } from "../atoms";
 
 const BigMovieWrapper = styled(motion.div)`
   position: absolute;
@@ -141,6 +143,10 @@ interface IGenre {
 function BigMovie({ movieId, clickedMovie, movieName }: IMovieDetail) {
   const { scrollY } = useViewportScroll();
   const { data: genreData } = useQuery<IGenreData>("genres", getGenre);
+
+  // const favsMovies = useRecoilValue(favsMovieState);
+
+  // console.log(favsMovies.find((fav) => fav.id === clickedMovie.id));
 
   return (
     <BigMovieWrapper
