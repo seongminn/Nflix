@@ -97,6 +97,7 @@ interface IForm {
 function Header() {
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("tv");
+  const wishMatch = useMatch("wish");
   const [search, setSearch] = useState(false);
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
@@ -154,6 +155,12 @@ function Header() {
             <Link to="tv">
               Tv Shows
               {tvMatch && <PositionBar layoutId="circle" />}
+            </Link>
+          </Item>
+          <Item>
+            <Link to="wish">
+              Wish List
+              {wishMatch && <PositionBar layoutId="circle" />}
             </Link>
           </Item>
         </Items>
