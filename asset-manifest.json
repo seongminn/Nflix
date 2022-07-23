@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/Nflix/static/js/main.ee110fb0.js",
+    "main.js": "/Nflix/static/js/main.07ab0b89.js",
     "index.html": "/Nflix/index.html",
-    "main.ee110fb0.js.map": "/Nflix/static/js/main.ee110fb0.js.map"
+    "main.07ab0b89.js.map": "/Nflix/static/js/main.07ab0b89.js.map"
   },
   "entrypoints": [
-    "static/js/main.ee110fb0.js"
+    "static/js/main.07ab0b89.js"
   ]
 }
