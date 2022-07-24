@@ -88,16 +88,11 @@ const Stars = styled.div`
   }
 `;
 
-const Hearts = styled(motion.div)<{ clickedhearts: string | undefined }>`
+const Hearts = styled(motion.div)`
   font-size: 16px;
   display: flex;
   align-items: center;
   padding: 10px;
-
-  path {
-    fill: ${(props) =>
-      props.clickedhearts === "true" ? "#ff6b81" : "#d9d9d9"};
-  }
 `;
 
 const Info = styled(motion.div)`
@@ -308,16 +303,11 @@ function MovieSlider({ movieData }: IMovieData) {
                         <FontAwesomeIcon icon={faStar} /> &nbsp;
                         {movie.vote_average}
                       </Stars>
-                      <Hearts
-                        onClick={(e) => onClickHeart(e, movie)}
-                        clickedhearts={
-                          favs.find((fav) => fav.id === movie.id) && true + ""
-                        }
-                      >
+                      <Hearts onClick={(e) => onClickHeart(e, movie)}>
                         {favs.find((fav) => fav.id === movie.id) ? (
-                          <HeartFilled />
+                          <HeartFilled style={{ color: "#ff6b81" }} />
                         ) : (
-                          <HeartOutlined />
+                          <HeartOutlined style={{ color: "#d9d9d9" }} />
                         )}
                       </Hearts>
                     </BoxOverlay>

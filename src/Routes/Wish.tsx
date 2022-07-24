@@ -110,7 +110,7 @@ const boxVars = {
 function Wish() {
   const [favsMovies, setFavsMovies] = useRecoilState(favsMovieState);
   const [favsTvs, setFavsTvs] = useRecoilState(favsTVState);
-  const [curCate, setCurCate] = useState("");
+  const [curCate, setCurCate] = useState("movie");
 
   const onClickCate = (e: React.MouseEvent<HTMLSpanElement>) => {
     const {
@@ -126,7 +126,7 @@ function Wish() {
   return (
     <Wrapper>
       <RowCategory>
-        <Title onClick={(e) => onClickCate(e)} data-name="movie">
+        <Title onClick={onClickCate} data-name="movie">
           영화
         </Title>
 
