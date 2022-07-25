@@ -99,3 +99,19 @@ export async function getGenre() {
   );
   return await res.json();
 }
+
+export async function getSearchMovie(query: string | null) {
+  const res = await fetch(
+    `${BASE_PATH}/search/movie?api_key=${API_KEY}&language=ko-KR&query=${query}&page=1&include_adult=false`
+  );
+
+  return await res.json();
+}
+
+export async function getSearchTv(query: string | null) {
+  const res = await fetch(
+    `${BASE_PATH}/search/tv?api_key=${API_KEY}&language=ko-KR&query=${query}&page=1&include_adult=false`
+  );
+
+  return await res.json();
+}

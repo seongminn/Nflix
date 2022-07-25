@@ -56,7 +56,7 @@ const Rows = styled.div`
 `;
 
 const Box = styled(motion.div)`
-  height: 200px;
+  height: 250px;
   font-size: 66px;
   cursor: pointer;
 

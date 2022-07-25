@@ -29,12 +29,14 @@ const Category = styled.p`
   font-weight: 600;
   font-family: "Source Sans Pro";
 
-  &::before {
+  /* &::before {
     content: "";
-    height: 10px;
+    position: absolute;
+
+    height: 20px;
     width: 2px;
     background-color: ${(props) => props.theme.red};
-  }
+  } */
 `;
 
 const Row = styled(motion.div)`
@@ -119,24 +121,26 @@ const Info = styled(motion.div)`
 
 const LeftBtn = styled.button`
   position: absolute;
-  top: 84px;
+  top: 50%;
   left: 20px;
   font-size: 32px;
   background-color: transparent;
   color: ${(props) => props.theme.white.lighter};
   border-color: transparent;
+  z-index: 50;
 
   cursor: pointer;
 `;
 
 const RightBtn = styled.button`
   position: absolute;
-  top: 84px;
+  top: 50%;
   right: 20px;
   font-size: 32px;
   background-color: transparent;
   color: ${(props) => props.theme.white.lighter};
   border-color: transparent;
+  z-index: 50;
 
   cursor: pointer;
 `;
@@ -266,6 +270,9 @@ function MovieSlider({ movieData }: IMovieData) {
           initial={false}
           onExitComplete={toggleLeaving}
         >
+          <LeftBtn key="left" onClick={() => increaseIndex("prev")}>
+            <FontAwesomeIcon icon={faCaretLeft} />
+          </LeftBtn>
           <Row
             custom={back}
             variants={rowVars}
@@ -275,9 +282,6 @@ function MovieSlider({ movieData }: IMovieData) {
             transition={{ type: "tween", duration: 0.5 }}
             key={index}
           >
-            <LeftBtn onClick={() => increaseIndex("prev")}>
-              <FontAwesomeIcon icon={faCaretLeft} />
-            </LeftBtn>
             {movieData.movieArr
               .slice(1)
               .slice(index * offset, index * offset + offset)
@@ -317,10 +321,10 @@ function MovieSlider({ movieData }: IMovieData) {
                   </Info>
                 </Box>
               ))}
-            <RightBtn onClick={() => increaseIndex("next")}>
-              <FontAwesomeIcon icon={faCaretRight} />
-            </RightBtn>
           </Row>
+          <RightBtn key="right" onClick={() => increaseIndex("next")}>
+            <FontAwesomeIcon icon={faCaretRight} />
+          </RightBtn>
         </AnimatePresence>
       </Slider>
       <AnimatePresence>

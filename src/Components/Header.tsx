@@ -48,17 +48,6 @@ const Item = styled.li`
   }
 `;
 
-const Search = styled.form`
-  color: white;
-  display: flex;
-  align-items: center;
-  position: relative;
-
-  svg {
-    height: 25px;
-  }
-`;
-
 const PositionBar = styled(motion.span)`
   position: absolute;
   width: 100%;
@@ -70,7 +59,20 @@ const PositionBar = styled(motion.span)`
   margin: 0 auto;
 `;
 
+const Search = styled.form`
+  color: white;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  svg {
+    height: 25px;
+    cursor: pointer;
+  }
+`;
+
 const Input = styled(motion.input)`
+  display: flex;
   transform-origin: right center;
   position: absolute;
   right: 0px;
@@ -81,6 +83,7 @@ const Input = styled(motion.input)`
   font-size: 16px;
   background-color: transparent;
   border: 1px solid ${(props) => props.theme.white.lighter};
+  border-radius: 5px;
 `;
 
 const navVars = {
