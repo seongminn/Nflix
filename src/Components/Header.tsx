@@ -135,7 +135,10 @@ function Header() {
 
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm<IForm>();
+
   const onValid = (data: IForm) => {
+    // e: React.MouseEvent<HTMLFormElement>
+    console.log(data);
     navigate(`search?keyword=${data.keyword}`);
   };
 
@@ -171,7 +174,7 @@ function Header() {
         </Items>
       </Col>
       <Col>
-        <Search onSubmit={handleSubmit(onValid)}>
+        <Search onSubmit={() => handleSubmit(onValid)}>
           <motion.svg
             onClick={toggleSearch}
             animate={{ x: search ? -211 : 0 }}

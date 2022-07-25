@@ -137,7 +137,9 @@ function Search() {
               bgphoto={
                 movie.backdrop_path
                   ? makeImgPath(movie.backdrop_path, "w500")
-                  : makeImgPath(movie.poster_path, "w500")
+                  : movie.poster_path
+                  ? makeImgPath(movie.poster_path, "w500")
+                  : "./imgs/NO_IMAGE.png"
               }
             ></BoxImg>
             <Info>
