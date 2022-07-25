@@ -5,6 +5,9 @@ import { makeImgPath } from "../Routes/utils";
 import { useQuery } from "react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faStarHalfStroke } from "@fortawesome/free-solid-svg-icons";
+import { useRecoilState } from "recoil";
+import { favsTVState } from "../atoms";
+import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 
 const BigTVWrapper = styled(motion.div)`
   position: absolute;
@@ -33,13 +36,22 @@ const BigTitle = styled.div`
   padding: 20px;
   padding-bottom: 15px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const BigText = styled.h3`
   color: ${(props) => props.theme.white.lighter};
   font-size: 24px;
   font-weight: 600;
+`;
+
+const BigHeart = styled.div`
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+
+  cursor: pointer;
 `;
 
 const BigCategory = styled.div`
@@ -142,6 +154,28 @@ function BigTV({ tvId, clickedTV, tvName }: ITVDetail) {
   const { scrollY } = useViewportScroll();
   const { data: genreData } = useQuery<IGenreData>("genres", getGenre);
 
+  const [favs, setFavs] = useRecoilState(favsTVState);
+
+  const onClickHeart = (e: React.MouseEvent<HTMLDivElement>, tv: ITv) => {
+    e.stopPropagation();
+    setFavs((favs: ITv[]) => {
+      const prevFavs = [...favs];
+
+      const favIndex = prevFavs.findIndex((fav) => fav.id === tv.id);
+
+      let resultFavs;
+      if (favIndex === -1) {
+        resultFavs = [...prevFavs, tv];
+      } else {
+        prevFavs.splice(favIndex, 1);
+
+        resultFavs = prevFavs;
+      }
+
+      return resultFavs;
+    });
+  };
+
   return (
     <BigTVWrapper style={{ top: scrollY.get() + 100 }} layoutId={tvId + tvName}>
       {clickedTV && (
@@ -157,6 +191,13 @@ function BigTV({ tvId, clickedTV, tvName }: ITVDetail) {
           ></BigCover>
           <BigTitle>
             <BigText>{clickedTV.name}</BigText>
+            <BigHeart onClick={(e) => onClickHeart(e, clickedTV)}>
+              {favs.find((fav) => fav.id === clickedTV.id) ? (
+                <HeartFilled style={{ color: "#ff6b81" }} />
+              ) : (
+                <HeartOutlined style={{ color: "#d9d9d9" }} />
+              )}
+            </BigHeart>
           </BigTitle>
           <BigDetailBox>
             <BigDetails>

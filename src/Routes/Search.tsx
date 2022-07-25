@@ -1,18 +1,10 @@
-import { useEffect, useState } from "react";
-import { useLocation, useMatch, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { getSearchMovie, getSearchTv, IGetMovies, IGetTvs } from "../api";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { AnimatePresence, motion } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
+import {} from "@fortawesome/react-fontawesome";
 import { makeImgPath } from "./utils";
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
-import { faCaretLeft } from "@fortawesome/free-solid-svg-icons";
-import { useSetRecoilState } from "recoil";
-import { overlayState } from "../atoms";
-import { IMovie } from "./../api";
-import { IMovieData } from "../Components/MovieSlider";
-import BigMovie from "../Components/BigMoive";
 
 const Wrapper = styled.div`
   padding: 60px;

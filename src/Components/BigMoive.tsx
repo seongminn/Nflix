@@ -5,8 +5,9 @@ import { makeImgPath } from "../Routes/utils";
 import { useQuery } from "react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faStarHalfStroke } from "@fortawesome/free-solid-svg-icons";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { favsMovieState } from "../atoms";
+import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 
 const BigMovieWrapper = styled(motion.div)`
   position: absolute;
@@ -35,13 +36,22 @@ const BigTitle = styled.div`
   padding: 20px;
   padding-bottom: 15px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const BigText = styled.h3`
   color: ${(props) => props.theme.white.lighter};
   font-size: 24px;
   font-weight: 600;
+`;
+
+const BigHeart = styled.div`
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+
+  cursor: pointer;
 `;
 
 const BigCategory = styled.div`
@@ -143,10 +153,27 @@ interface IGenre {
 function BigMovie({ movieId, clickedMovie, movieName }: IMovieDetail) {
   const { scrollY } = useViewportScroll();
   const { data: genreData } = useQuery<IGenreData>("genres", getGenre);
+  const [favs, setFavs] = useRecoilState(favsMovieState);
 
-  // const favsMovies = useRecoilValue(favsMovieState);
+  const onClickHeart = (e: React.MouseEvent<HTMLDivElement>, movie: IMovie) => {
+    e.stopPropagation();
+    setFavs((favs: IMovie[]) => {
+      const prevFavs = [...favs];
 
-  // console.log(favsMovies.find((fav) => fav.id === clickedMovie.id));
+      const favIndex = prevFavs.findIndex((fav) => fav.id === movie.id);
+
+      let resultFavs;
+      if (favIndex === -1) {
+        resultFavs = [...prevFavs, movie];
+      } else {
+        prevFavs.splice(favIndex, 1);
+
+        resultFavs = prevFavs;
+      }
+
+      return resultFavs;
+    });
+  };
 
   return (
     <BigMovieWrapper
@@ -166,6 +193,13 @@ function BigMovie({ movieId, clickedMovie, movieName }: IMovieDetail) {
           ></BigCover>
           <BigTitle>
             <BigText>{clickedMovie.title}</BigText>
+            <BigHeart onClick={(e) => onClickHeart(e, clickedMovie)}>
+              {favs.find((fav) => fav.id === clickedMovie.id) ? (
+                <HeartFilled style={{ color: "#ff6b81" }} />
+              ) : (
+                <HeartOutlined style={{ color: "#d9d9d9" }} />
+              )}
+            </BigHeart>
           </BigTitle>
           <BigDetailBox>
             <BigDetails>
