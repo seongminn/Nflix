@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { motion, useAnimation, useViewportScroll } from "framer-motion";
 import { Link, useMatch, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const Nav = styled(motion.nav)`
@@ -105,6 +105,7 @@ function Header() {
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useViewportScroll();
+  const inputRef = useRef() as MutableRefObject<HTMLInputElement>;
 
   const toggleSearch = () => {
     if (search) {
@@ -117,6 +118,7 @@ function Header() {
       inputAnimation.start({
         scaleX: 1,
       });
+      inputRef.current.focus();
     }
     setSearch((prev) => !prev);
   };
@@ -190,6 +192,7 @@ function Header() {
             initial={{ scaleX: 0 }}
             transition={{ type: "linear" }}
             placeholder="Search for movie or tv show."
+            ref={inputRef}
           />
         </Search>
       </Col>
