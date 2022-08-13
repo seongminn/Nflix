@@ -4,6 +4,10 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { makeImgPath } from "./utils";
 import { useState } from "react";
+import { HeartFilled, HeartOutlined } from "@ant-design/icons";
+import { IMovie, ITv } from "../api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const Wrapper = styled.div`
   padding: 60px;
@@ -14,9 +18,9 @@ const RowCategory = styled.div`
   margin: 30px 0;
 `;
 
-const Title = styled.span`
+const Title = styled.span<{ isActive: boolean }>`
   position: relative;
-  color: #ffffffde;
+  color: ${(props) => (props.isActive ? "#ffffffde" : "#696969de")};
   font-size: 16px;
   line-height: 1.47;
   font-weight: 700;
@@ -97,6 +101,16 @@ const Info = styled(motion.div)`
   }
 `;
 
+const Hearts = styled.div`
+  font-size: 16px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 10px;
+`;
+
 const boxVars = {
   normal: {
     scale: 1,
@@ -123,14 +137,61 @@ function Wish() {
     setCurCate(name!);
   };
 
+  const onClickX = (
+    e: React.MouseEvent<HTMLDivElement>,
+    value: any,
+    category: string
+  ) => {
+    e.stopPropagation();
+    if (category === "movie") {
+      setFavsMovies((favs: IMovie[]) => {
+        const prevFavs = [...favs];
+
+        const favIndex = prevFavs.findIndex((fav) => fav.id === value.id);
+
+        let resultFavs;
+        if (favIndex === -1) {
+          resultFavs = [...prevFavs, value];
+        } else {
+          prevFavs.splice(favIndex, 1);
+
+          resultFavs = prevFavs;
+        }
+
+        return resultFavs;
+      });
+    } else {
+      setFavsTvs((favs: ITv[]) => {
+        const prevFavs = [...favs];
+
+        const favIndex = prevFavs.findIndex((fav) => fav.id === value.id);
+
+        let resultFavs;
+        if (favIndex === -1) {
+          resultFavs = [...prevFavs, value];
+        } else {
+          prevFavs.splice(favIndex, 1);
+
+          resultFavs = prevFavs;
+        }
+
+        return resultFavs;
+      });
+    }
+  };
+
   return (
     <Wrapper>
       <RowCategory>
-        <Title onClick={onClickCate} data-name="movie">
+        <Title
+          onClick={onClickCate}
+          data-name="movie"
+          isActive={curCate === "movie"}
+        >
           영화
         </Title>
 
-        <Title onClick={onClickCate} data-name="tv">
+        <Title onClick={onClickCate} data-name="tv" isActive={curCate === "tv"}>
           TV 프로그램
         </Title>
       </RowCategory>
@@ -150,7 +211,15 @@ function Wish() {
                     ? makeImgPath(movie.backdrop_path, "w500")
                     : makeImgPath(movie.poster_path, "w500")
                 }
-              ></BoxImg>
+              >
+                {/* <Cancle onClick={(e) => onClickX(e, movie)}>
+                  <FontAwesomeIcon icon={faXmark} />
+                </Cancle> */}
+                <Hearts onClick={(e) => onClickX(e, movie, "movie")}>
+                  <HeartFilled style={{ color: "#ff6b81" }} />
+                </Hearts>
+              </BoxImg>
+
               <Info>
                 <h4>{movie.title}</h4>
               </Info>
@@ -172,7 +241,11 @@ function Wish() {
                     ? makeImgPath(tv.backdrop_path, "w500")
                     : makeImgPath(tv.poster_path, "w500")
                 }
-              ></BoxImg>
+              >
+                <Hearts onClick={(e) => onClickX(e, tv, "movie")}>
+                  <HeartFilled style={{ color: "#ff6b81" }} />
+                </Hearts>
+              </BoxImg>
               <Info>
                 <h4>{tv.name}</h4>
               </Info>
