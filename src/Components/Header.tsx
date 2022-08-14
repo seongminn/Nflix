@@ -107,6 +107,7 @@ function Header() {
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useViewportScroll();
+  const inputRef = useRef() as MutableRefObject<HTMLInputElement>;
   const toggleSearch = () => {
     setFocus("keyword");
     if (search) {
@@ -200,6 +201,7 @@ function Header() {
             initial={{ scaleX: 0 }}
             transition={{ type: "linear" }}
             placeholder="Search for movie or tv show."
+            // ref={inputRef}
           />
         </Search>
       </Col>

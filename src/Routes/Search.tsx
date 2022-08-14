@@ -5,6 +5,8 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import {} from "@fortawesome/react-fontawesome";
 import { makeImgPath } from "./utils";
+import { useEffect, useState } from "react";
+// import back from "../imgs/";
 
 const Wrapper = styled.div`
   padding: 60px;
@@ -70,10 +72,12 @@ const BoxImg = styled.div<{ bgphoto: string }>`
   position: relative;
   height: 200px;
   border-radius: 5px;
+  /* background: #383838; */
 
   background-image: url(${(props) => props.bgphoto});
-  background-color: white;
+  background-color: black;
   background-size: cover;
+  background-position: center center;
 `;
 
 const Info = styled(motion.div)`
@@ -110,9 +114,8 @@ const boxVars = {
 
 function Search() {
   const location = useLocation();
-  console.log(location);
   const keyword = new URLSearchParams(location.search).get("keyword");
-  console.log(keyword);
+
   const { data: searchMovie } = useQuery<IGetMovies>(["search", "movie"], () =>
     getSearchMovie(keyword && keyword)
   );
@@ -140,7 +143,7 @@ function Search() {
                   ? makeImgPath(movie.backdrop_path, "w500")
                   : movie.poster_path
                   ? makeImgPath(movie.poster_path, "w500")
-                  : "./imgs/NO_IMAGE.png"
+                  : "https://propertywiselaunceston.com.au/wp-content/themes/property-wise/images/no-image.png"
               }
             ></BoxImg>
             <Info>
@@ -165,7 +168,9 @@ function Search() {
               bgphoto={
                 tv.backdrop_path
                   ? makeImgPath(tv.backdrop_path, "w500")
-                  : makeImgPath(tv.poster_path, "w500")
+                  : tv.poster_path
+                  ? makeImgPath(tv.poster_path, "w500")
+                  : "https://propertywiselaunceston.com.au/wp-content/themes/property-wise/images/no-image.png"
               }
             ></BoxImg>
             <Info>
