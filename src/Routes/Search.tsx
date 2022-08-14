@@ -110,15 +110,15 @@ const boxVars = {
 
 function Search() {
   const location = useLocation();
-  const keyword = new URLSearchParams(window.location.search).get("keyword");
+  console.log(location);
+  const keyword = new URLSearchParams(location.search).get("keyword");
+  console.log(keyword);
   const { data: searchMovie } = useQuery<IGetMovies>(["search", "movie"], () =>
     getSearchMovie(keyword && keyword)
   );
   const { data: searchTv } = useQuery<IGetTvs>(["search", "tv"], () =>
     getSearchTv(keyword && keyword)
   );
-
-  console.log(location);
 
   return (
     <Wrapper>

@@ -107,9 +107,8 @@ function Header() {
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useViewportScroll();
-  const inputRef = useRef() as MutableRefObject<HTMLInputElement>;
-
   const toggleSearch = () => {
+    setFocus("keyword");
     if (search) {
       // trigger the close animation
       inputAnimation.start({
@@ -120,7 +119,6 @@ function Header() {
       inputAnimation.start({
         scaleX: 1,
       });
-      inputRef.current.focus();
     }
     setSearch((prev) => !prev);
   };
@@ -136,7 +134,8 @@ function Header() {
   }, [scrollY, navAnimation]);
 
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm<IForm>();
+  const { register, handleSubmit, watch, setFocus } = useForm<IForm>();
+  console.log(watch("keyword"));
 
   const onValid = (data: IForm) => {
     navigate(`/search?keyword=${data.keyword}`);
@@ -178,7 +177,7 @@ function Header() {
         </Items>
       </Col>
       <Col>
-        <Search onSubmit={() => handleSubmit(onValid)}>
+        <Search onSubmit={handleSubmit(onValid)}>
           <motion.svg
             onClick={toggleSearch}
             animate={{ x: search ? -211 : 0 }}
@@ -194,12 +193,13 @@ function Header() {
             ></path>
           </motion.svg>
           <Input
+            // ref={register}
             {...register("keyword", { required: true, minLength: 2 })}
+            // value={searchValue}
             animate={inputAnimation}
             initial={{ scaleX: 0 }}
             transition={{ type: "linear" }}
             placeholder="Search for movie or tv show."
-            ref={inputRef}
           />
         </Search>
       </Col>

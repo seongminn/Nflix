@@ -10,8 +10,6 @@ function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/search" element={<Search />} />
-
         <Route path="/tv/*" element={<Tv />}>
           <Route path="tvs/:tvCategory/:tvId" element={<Tv />} />
         </Route>
@@ -19,7 +17,8 @@ function App() {
           <Route path="wish/:wishCategory/:wishId" element={<Wish />} />
         </Route>
 
-        <Route path="/" element={<Home />}>
+        <Route path="/search" element={<Search />} />
+        <Route path="/*" element={<Home />}>
           <Route path="movies/:movieCategory/:movieId" element={<Home />} />
         </Route>
       </Routes>
