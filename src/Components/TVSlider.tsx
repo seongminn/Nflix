@@ -5,8 +5,8 @@ import { useMatch, useNavigate, useParams } from "react-router-dom";
 import { makeImgPath } from "../Routes/utils";
 import { ITv } from "./../api";
 import {
-  faCaretLeft,
-  faCaretRight,
+  faChevronLeft,
+  faChevronRight,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,7 +19,16 @@ const Slider = styled.div`
   position: relative;
   top: -150px;
   margin-bottom: 100px;
-  height: 200px;
+  height: 250px;
+`;
+
+const InnerSlider = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  height: 250px;
+  justify-content: center;
+  align-items: flex-start;
 `;
 
 const Category = styled.p`
@@ -29,12 +38,27 @@ const Category = styled.p`
   font-weight: 600;
   font-family: "Source Sans Pro";
 
-  &::before {
+  /* &::before {
     content: "";
     height: 10px;
     width: 2px;
     background-color: ${(props) => props.theme.red};
-  }
+  } */
+`;
+
+const RowWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  height: 100%;
+  overflow-x: hidden;
+`;
+
+const RowContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 const Row = styled(motion.div)`
@@ -43,11 +67,9 @@ const Row = styled(motion.div)`
   position: absolute;
   gap: 5px;
   width: 100%;
-  padding: 0 60px;
 `;
 
 const Box = styled(motion.div)`
-  height: 200px;
   font-size: 66px;
   cursor: pointer;
 
@@ -122,26 +144,14 @@ const Info = styled(motion.div)`
   }
 `;
 
-const LeftBtn = styled.button`
-  position: absolute;
-  top: 84px;
-  left: 20px;
+const Arrow = styled.button`
+  width: 60px;
+  height: 200px;
   font-size: 32px;
   background-color: transparent;
   color: ${(props) => props.theme.white.lighter};
   border-color: transparent;
-
-  cursor: pointer;
-`;
-
-const RightBtn = styled.button`
-  position: absolute;
-  top: 84px;
-  right: 20px;
-  font-size: 32px;
-  background-color: transparent;
-  color: ${(props) => props.theme.white.lighter};
-  border-color: transparent;
+  outline: none;
 
   cursor: pointer;
 `;
@@ -271,74 +281,81 @@ function TvSlider({ tvData }: ITvData) {
     <>
       <Slider>
         <Category>{tvData.tvName}</Category>
-        <AnimatePresence
-          custom={back}
-          initial={false}
-          onExitComplete={toggleLeaving}
-        >
-          <Row
-            custom={back}
-            variants={rowVars}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            transition={{ type: "tween", duration: 1 }}
-            key={index}
-          >
-            <LeftBtn onClick={() => increaseIndex("prev")}>
-              <FontAwesomeIcon icon={faCaretLeft} />
-            </LeftBtn>
-            {tvData.tvArr
-              .slice(1)
-              .slice(index * offset, index * offset + offset)
-              .map((tv) => (
-                <Box
-                  key={tv.id + tvData.tvName}
-                  layoutId={tv.id + tvData.tvName}
-                  onClick={() => onBoxClicked(tv.id)}
-                  variants={boxVars}
-                  initial="normal"
-                  whileHover="hover"
-                  transition={{ type: "tween" }}
+        <InnerSlider>
+          <Arrow onClick={() => increaseIndex("prev")}>
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </Arrow>
+          <RowWrapper>
+            <RowContainer>
+              <AnimatePresence
+                custom={back}
+                initial={false}
+                onExitComplete={toggleLeaving}
+              >
+                <Row
+                  custom={back}
+                  variants={rowVars}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  transition={{ type: "tween", duration: 0.5 }}
+                  key={index}
                 >
-                  <BoxImg
-                    bgphoto={
-                      tv.backdrop_path
-                        ? makeImgPath(tv.backdrop_path, "w500")
-                        : makeImgPath(tv.poster_path, "w500")
-                    }
-                  >
-                    <BoxOverlay variants={hoverVars}>
-                      <Stars>
-                        <FontAwesomeIcon icon={faStar} /> &nbsp;
-                        {tv.vote_average}
-                      </Stars>
-                      <Hearts
-                        onClick={(e) => onClickHeart(e, tv)}
-                        variants={heartVars}
-                        clickedhearts={
-                          favs.find((fav) => fav.id === tv.id) && true + ""
-                        }
+                  {tvData.tvArr
+                    .slice(1)
+                    .slice(index * offset, index * offset + offset)
+                    .map((tv) => (
+                      <Box
+                        key={tv.id + tvData.tvName}
+                        layoutId={tv.id + tvData.tvName}
+                        onClick={() => onBoxClicked(tv.id)}
+                        variants={boxVars}
+                        initial="normal"
+                        whileHover="hover"
+                        transition={{ type: "tween" }}
                       >
-                        {favs.find((fav) => fav.id === tv.id) ? (
-                          <HeartFilled />
-                        ) : (
-                          <HeartOutlined />
-                        )}
-                      </Hearts>
-                    </BoxOverlay>
-                  </BoxImg>
+                        <BoxImg
+                          bgphoto={
+                            tv.backdrop_path
+                              ? makeImgPath(tv.backdrop_path, "w500")
+                              : makeImgPath(tv.poster_path, "w500")
+                          }
+                        >
+                          <BoxOverlay variants={hoverVars}>
+                            <Stars>
+                              <FontAwesomeIcon icon={faStar} /> &nbsp;
+                              {tv.vote_average}
+                            </Stars>
+                            <Hearts
+                              onClick={(e) => onClickHeart(e, tv)}
+                              variants={heartVars}
+                              clickedhearts={
+                                favs.find((fav) => fav.id === tv.id) &&
+                                true + ""
+                              }
+                            >
+                              {favs.find((fav) => fav.id === tv.id) ? (
+                                <HeartFilled />
+                              ) : (
+                                <HeartOutlined />
+                              )}
+                            </Hearts>
+                          </BoxOverlay>
+                        </BoxImg>
 
-                  <Info>
-                    <h4>{tv.name}</h4>
-                  </Info>
-                </Box>
-              ))}
-            <RightBtn onClick={() => increaseIndex("next")}>
-              <FontAwesomeIcon icon={faCaretRight} />
-            </RightBtn>
-          </Row>
-        </AnimatePresence>
+                        <Info>
+                          <h4>{tv.name}</h4>
+                        </Info>
+                      </Box>
+                    ))}
+                </Row>
+              </AnimatePresence>
+            </RowContainer>
+          </RowWrapper>
+          <Arrow onClick={() => increaseIndex("next")}>
+            <FontAwesomeIcon icon={faChevronRight} />
+          </Arrow>
+        </InnerSlider>
       </Slider>
       <AnimatePresence>
         {bigTvMatch && clickedTv ? (

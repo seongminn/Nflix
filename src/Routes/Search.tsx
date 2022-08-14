@@ -118,6 +118,8 @@ function Search() {
     getSearchTv(keyword && keyword)
   );
 
+  console.log(location);
+
   return (
     <Wrapper>
       <RowCategory>

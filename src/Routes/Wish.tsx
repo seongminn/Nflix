@@ -4,10 +4,8 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { makeImgPath } from "./utils";
 import { useState } from "react";
-import { HeartFilled, HeartOutlined } from "@ant-design/icons";
+import { HeartFilled } from "@ant-design/icons";
 import { IMovie, ITv } from "../api";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const Wrapper = styled.div`
   padding: 60px;

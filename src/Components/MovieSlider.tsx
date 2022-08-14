@@ -5,8 +5,8 @@ import { useMatch, useNavigate, useParams } from "react-router-dom";
 import { makeImgPath } from "../Routes/utils";
 import { IMovie } from "./../api";
 import {
-  faCaretLeft,
-  faCaretRight,
+  faChevronLeft,
+  faChevronRight,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,6 +20,15 @@ const Slider = styled.div`
   top: -150px;
   margin-bottom: 100px;
   height: 250px;
+`;
+
+const InnerSlider = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  height: 250px;
+  justify-content: center;
+  align-items: flex-start;
 `;
 
 const Category = styled.p`
@@ -39,17 +48,30 @@ const Category = styled.p`
   } */
 `;
 
+const RowWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  height: 100%;
+  overflow-x: hidden;
+`;
+
+const RowContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+`;
+
 const Row = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   position: absolute;
   gap: 5px;
   width: 100%;
-  padding: 0 60px;
 `;
 
 const Box = styled(motion.div)`
-  height: 200px;
   font-size: 66px;
   cursor: pointer;
 
@@ -119,28 +141,14 @@ const Info = styled(motion.div)`
   }
 `;
 
-const LeftBtn = styled.button`
-  position: absolute;
-  top: 50%;
-  left: 20px;
+const Arrow = styled.button`
+  width: 60px;
+  height: 200px;
   font-size: 32px;
   background-color: transparent;
   color: ${(props) => props.theme.white.lighter};
   border-color: transparent;
-  z-index: 50;
-
-  cursor: pointer;
-`;
-
-const RightBtn = styled.button`
-  position: absolute;
-  top: 50%;
-  right: 20px;
-  font-size: 32px;
-  background-color: transparent;
-  color: ${(props) => props.theme.white.lighter};
-  border-color: transparent;
-  z-index: 50;
+  outline: none;
 
   cursor: pointer;
 `;
@@ -265,67 +273,73 @@ function MovieSlider({ movieData }: IMovieData) {
     <>
       <Slider>
         <Category>{movieData.movieName}</Category>
-        <AnimatePresence
-          custom={back}
-          initial={false}
-          onExitComplete={toggleLeaving}
-        >
-          <LeftBtn key="left" onClick={() => increaseIndex("prev")}>
-            <FontAwesomeIcon icon={faCaretLeft} />
-          </LeftBtn>
-          <Row
-            custom={back}
-            variants={rowVars}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            transition={{ type: "tween", duration: 0.5 }}
-            key={index}
-          >
-            {movieData.movieArr
-              .slice(1)
-              .slice(index * offset, index * offset + offset)
-              .map((movie) => (
-                <Box
-                  key={movie.id + movieData.movieName}
-                  layoutId={movie.id + movieData.movieName}
-                  onClick={() => onBoxClicked(movie.id)}
-                  variants={boxVars}
-                  initial="normal"
-                  whileHover="hover"
-                  transition={{ type: "tween" }}
+        <InnerSlider>
+          <Arrow key="left" onClick={() => increaseIndex("prev")}>
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </Arrow>
+          <RowWrapper>
+            <RowContainer>
+              <AnimatePresence
+                custom={back}
+                initial={false}
+                onExitComplete={toggleLeaving}
+              >
+                <Row
+                  custom={back}
+                  variants={rowVars}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  transition={{ type: "tween", duration: 0.5 }}
+                  key={index}
                 >
-                  <BoxImg
-                    bgphoto={
-                      movie.backdrop_path
-                        ? makeImgPath(movie.backdrop_path, "w500")
-                        : makeImgPath(movie.poster_path, "w500")
-                    }
-                  >
-                    <BoxOverlay variants={hoverVars}>
-                      <Stars>
-                        <FontAwesomeIcon icon={faStar} /> &nbsp;
-                        {movie.vote_average}
-                      </Stars>
-                      <Hearts onClick={(e) => onClickHeart(e, movie)}>
-                        {favs.find((fav) => fav.id === movie.id) ? (
-                          <HeartFilled style={{ color: "#ff6b81" }} />
-                        ) : (
-                          <HeartOutlined style={{ color: "#d9d9d9" }} />
-                        )}
-                      </Hearts>
-                    </BoxOverlay>
-                  </BoxImg>
-                  <Info>
-                    <h4>{movie.title}</h4>
-                  </Info>
-                </Box>
-              ))}
-          </Row>
-          <RightBtn key="right" onClick={() => increaseIndex("next")}>
-            <FontAwesomeIcon icon={faCaretRight} />
-          </RightBtn>
-        </AnimatePresence>
+                  {movieData.movieArr
+                    .slice(1)
+                    .slice(index * offset, index * offset + offset)
+                    .map((movie) => (
+                      <Box
+                        key={movie.id + movieData.movieName}
+                        layoutId={movie.id + movieData.movieName}
+                        onClick={() => onBoxClicked(movie.id)}
+                        variants={boxVars}
+                        initial="normal"
+                        whileHover="hover"
+                        transition={{ type: "tween" }}
+                      >
+                        <BoxImg
+                          bgphoto={
+                            movie.backdrop_path
+                              ? makeImgPath(movie.backdrop_path, "w500")
+                              : makeImgPath(movie.poster_path, "w500")
+                          }
+                        >
+                          <BoxOverlay variants={hoverVars}>
+                            <Stars>
+                              <FontAwesomeIcon icon={faStar} /> &nbsp;
+                              {movie.vote_average}
+                            </Stars>
+                            <Hearts onClick={(e) => onClickHeart(e, movie)}>
+                              {favs.find((fav) => fav.id === movie.id) ? (
+                                <HeartFilled style={{ color: "#ff6b81" }} />
+                              ) : (
+                                <HeartOutlined style={{ color: "#d9d9d9" }} />
+                              )}
+                            </Hearts>
+                          </BoxOverlay>
+                        </BoxImg>
+                        <Info>
+                          <h4>{movie.title}</h4>
+                        </Info>
+                      </Box>
+                    ))}
+                </Row>
+              </AnimatePresence>
+            </RowContainer>
+          </RowWrapper>
+          <Arrow key="right" onClick={() => increaseIndex("next")}>
+            <FontAwesomeIcon icon={faChevronRight} />
+          </Arrow>
+        </InnerSlider>
       </Slider>
       <AnimatePresence>
         {bigMovieMatch && clickedMovie ? (
