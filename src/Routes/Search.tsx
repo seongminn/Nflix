@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import {} from "@fortawesome/react-fontawesome";
 import { makeImgPath } from "./utils";
-import { useEffect, useState } from "react";
 // import back from "../imgs/";
 
 const Wrapper = styled.div`

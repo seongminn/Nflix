@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { motion, useAnimation, useViewportScroll } from "framer-motion";
 import { Link, useMatch, useNavigate } from "react-router-dom";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const Nav = styled(motion.nav)`
@@ -107,7 +107,7 @@ function Header() {
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useViewportScroll();
-  const inputRef = useRef() as MutableRefObject<HTMLInputElement>;
+  // const inputRef = useRef() as MutableRefObject<HTMLInputElement>;
   const toggleSearch = () => {
     setFocus("keyword");
     if (search) {
