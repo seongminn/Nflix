@@ -19,7 +19,7 @@ function App() {
           <Route path="wish/:wishCategory/:wishId" element={<Wish />} />
         </Route>
 
-        <Route path="/*" element={<Home />}>
+        <Route path="/" element={<Home />}>
           <Route path="movies/:movieCategory/:movieId" element={<Home />} />
         </Route>
       </Routes>

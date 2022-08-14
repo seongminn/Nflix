@@ -67,6 +67,7 @@ const Row = styled(motion.div)`
   position: absolute;
   gap: 5px;
   width: 100%;
+  overflow: hidden;
 `;
 
 const Box = styled(motion.div)`
